@@ -1,4 +1,6 @@
 import json
+
+OUT = (-1, 0, 0, "H")
 #Fungsi dasar untuk penataan kendaraan pada kapal
 
 
