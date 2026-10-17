@@ -27,7 +27,7 @@ def simpan_run(problem, hasil, nama, k, folder):
         f.write(f"=== {nama} run {k} (seed {hasil['params']['seed']}) ===\n\n")
         f.write(f"STATE AWAL (value_fee {value_fee(problem, hasil['initial_state'])})\n")
         f.write(render_text(problem, hasil["initial_state"]) + "\n\n")
-        f.write(f"STATE AKHIR (value_fee {value_fee(problem, hasil['final_value'])})\n")
+        f.write(f"STATE AKHIR (value_fee {value_fee(problem, hasil['final_state'])})\n")
         f.write(render_text(problem, hasil["final_state"]) + "\n")
 
 
@@ -105,7 +105,7 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     semua = []
     for nama in args.kasus:
-        problem = load_problem(os.path.join(ROOT, "data", nama + ".json"))
+        problem = load_problem(os.path.join(ROOT, "src", "data", nama + ".json"))
         hasil_list = []
         for k, seed in enumerate(SEEDS, 1):
             h = simulated_annealing(problem, T0=args.T0, alpha=args.alpha,

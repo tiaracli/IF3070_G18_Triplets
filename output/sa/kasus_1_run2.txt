@@ -1,0 +1,29 @@
+=== kasus_1 run 2 (seed 22) ===
+
+STATE AWAL (value_fee 196)
+kapal1 (muatan 15/22)
+D D . . B B J J
+. G G . H H J J
+. G G . H H J J
+. G G . H H J J
+. . K K K K . .
+. . K K K K . .
+. . F F F . . C
+. . F F F . . C
+
+Di luar: mini1, sedan1, suv1, truk1, truk2
+Legenda: A=mini1, B=mini2, C=mini3, D=mini4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
+
+STATE AKHIR (value_fee 284)
+kapal1 (muatan 22/22)
+B K K L L L J J
+B K K L L L J J
+C K K L L L J J
+C K K L L L J J
+. I I L L L E E
+A I I . . . E E
+A I I H H H E E
+. I I H H H D D
+
+Di luar: sedan2, sedan3, truk2
+Legenda: A=mini1, B=mini2, C=mini3, D=mini4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
