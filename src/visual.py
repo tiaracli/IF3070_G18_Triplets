@@ -1,8 +1,7 @@
-# visualisasi state kapal dan grafik GA pakai matplotlib
 import os
 
 import matplotlib
-matplotlib.use("Agg")  # biar bisa simpan gambar tanpa buka jendela
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
@@ -13,7 +12,6 @@ WARNA = {"mini": "skyblue", "sedan": "lightgreen", "suv": "gold", "truk": "orang
 
 
 def tipe(vid):
-    # "truk2" -> "truk"
     return vid.rstrip("0123456789")
 
 
@@ -22,7 +20,6 @@ def gambar_state(problem, state, judul, path):
     kendaraan = problem["vehicles"]
     n = len(kapal_list)
 
-    # 1 kolom per kapal + 1 kolom buat keterangan
     fig, axes = plt.subplots(1, n + 1, figsize=(5 * n + 4, 6))
 
     for k in range(n):
@@ -30,9 +27,7 @@ def gambar_state(problem, state, judul, path):
         W = kapal_list[k]["w"]
         L = kapal_list[k]["l"]
 
-        # zona depan (setengah kapal yang dekat ramp)
         ax.add_patch(Rectangle((0, 0), W, L // 2, color="aliceblue"))
-        # pintu ramp di y = 0
         ax.plot([0, W], [0, 0], color="red", linewidth=5)
         ax.text(W / 2, -0.6, "PINTU RAMP", color="red", ha="center")
 
@@ -44,7 +39,6 @@ def gambar_state(problem, state, judul, path):
                 continue
             w, l = get_vehicle_size(v, o)
             berat += v["weight"]
-            # garis tebal = kendaraan mendesak
             tebal = 3 if v["eta"] <= ETA_URGENT else 1
             ax.add_patch(Rectangle((x, y), w, l, facecolor=WARNA[tipe(v["id"])],
                                    edgecolor="black", linewidth=tebal))
@@ -60,7 +54,6 @@ def gambar_state(problem, state, judul, path):
         ax.set_title(kapal_list[k]["id"] + " (berat " + str(berat) + "/" +
                      str(kapal_list[k]["capacity"]) + ")")
 
-    # keterangan di kolom terakhir
     info = axes[n]
     info.axis("off")
     di_luar = [kendaraan[i] for i in range(len(kendaraan)) if state[i][0] == -1]
@@ -81,7 +74,6 @@ def gambar_state(problem, state, judul, path):
 
 
 def plot_ga(hasil, judul, path):
-    # objective maksimum dan rata-rata populasi vs iterasi
     plt.figure(figsize=(7, 4))
     plt.plot(hasil["history"], label="maksimum")
     plt.plot(hasil["extra"]["avg_history"], label="rata-rata populasi")
@@ -92,4 +84,4 @@ def plot_ga(hasil, judul, path):
     plt.grid(True)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     plt.savefig(path, dpi=120)
-    plt.close() 
+    plt.close()

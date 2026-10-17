@@ -1,10 +1,3 @@
-# Genetic Algorithm buat penataan kendaraan di kapal
-# alurnya ngikutin salindia kuliah: populasi awal -> seleksi -> crossover -> mutasi -> ulang
-#
-# state = tuple, isinya posisi tiap kendaraan sesuai urutan di file data
-# posisi = (kapal, x, y, orientasi), kalau di luar kapal = OUT (-1, 0, 0, "H")
-# cek constraint & objective pakai core.py (Indah), state awal & move pakai neighbor.py (Tiara)
-
 import random
 import time
 
@@ -13,9 +6,6 @@ from neighbor import random_state, random_neighbor
 
 
 def pilih_induk(populasi, fitness):
-    # roulette wheel. fitness dikurangin nilai paling kecil dulu (windowing),
-    # soalnya nilainya mirip-mirip (misal 250 vs 280) jadi kalau roulette biasa
-    # peluangnya hampir sama semua. sumber: Goldberg (1989)
     terkecil = min(fitness)
     bobot = []
     for f in fitness:
@@ -24,7 +14,6 @@ def pilih_induk(populasi, fitness):
 
 
 def crossover(a, b):
-    # single point crossover: gen ke-0 s.d. titik-1 dari induk a, sisanya dari b
     titik = random.randint(1, len(a) - 1)
     anak1 = a[:titik] + b[titik:]
     anak2 = b[:titik] + a[titik:]
@@ -32,9 +21,6 @@ def crossover(a, b):
 
 
 def perbaiki(problem, anak, cadangan):
-    # hasil crossover bisa overlap atau kelebihan berat, jadi diperbaiki:
-    # kendaraan dimasukin satu-satu (urutan acak). coba posisi di anak dulu,
-    # kalau bentrok coba posisi dari induk satunya, kalau masih bentrok dikeluarin
     hasil = [OUT] * len(anak)
     urutan = list(range(len(anak)))
     random.shuffle(urutan)
@@ -50,10 +36,9 @@ def perbaiki(problem, anak, cadangan):
 
 
 def mutasi(problem, state):
-    # mutasi = satu move acak (tukar / pindah / ubah orientasi) dari neighbor.py
     baru = random_neighbor(problem, state)
     if baru is None:
-        return state  # ga nemu neighbor yang valid, anak dibiarin
+        return state
     return baru
 
 
@@ -68,13 +53,11 @@ def run_ga(problem, objective="fee", populasi=50, iterasi=200, seed=None,
 
     mulai = time.time()
 
-    # populasi awal
     pop = []
     for _ in range(populasi):
         pop.append(random_state(problem))
     fitness = [nilai(problem, s) for s in pop]
 
-    # state awal = individu terbaik di populasi awal
     idx = fitness.index(max(fitness))
     state_awal = pop[idx]
     nilai_awal = fitness[idx]
@@ -85,7 +68,6 @@ def run_ga(problem, objective="fee", populasi=50, iterasi=200, seed=None,
     riwayat_rata = [sum(fitness) / populasi]
 
     for gen in range(iterasi):
-        # elitisme: 1 individu terbaik langsung masuk generasi berikutnya
         pop_baru = [pop[fitness.index(max(fitness))]]
 
         while len(pop_baru) < populasi:
@@ -118,7 +100,6 @@ def run_ga(problem, objective="fee", populasi=50, iterasi=200, seed=None,
 
     durasi = time.time() - mulai
 
-    # format output sesuai kesepakatan kelompok
     return {
         "algorithm": "ga",
         "objective": objective,

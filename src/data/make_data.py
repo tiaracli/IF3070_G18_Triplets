@@ -3,7 +3,6 @@ import os
 
 FOLDER = os.path.dirname(os.path.abspath(__file__))
 
-# tipe kendaraan: (w, l, berat, fee dalam juta, jumlah)
 TIPE_1 = {
     "mini": (1, 2, 1, 10, 4),
     "sedan": (2, 3, 2, 30, 4),
@@ -32,7 +31,7 @@ def buat_kendaraan(tipe):
                 "l": l,
                 "weight": berat,
                 "fee": fee,
-                "eta": (n % 10) + 1,  # sisa hari, dibuat 1-10 biar bervariasi
+                "eta": (n % 10) + 1,
             })
     return hasil
 
