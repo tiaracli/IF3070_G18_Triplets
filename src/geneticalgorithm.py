@@ -1,23 +1,22 @@
 import random
-import time
 
-from core import OUT, check_placement, value_fee, eta_value, count_misplaced_urgent
+from core import OUT, check_placement, value_fee, eta_value
 from neighbor import random_state, random_neighbor
 
 
+def hitung_nilai(problem, state, objective):
+    if objective == "eta":
+        return eta_value(problem, state)
+    return value_fee(problem, state)
+
+
 def pilih_induk(populasi, fitness):
-    terkecil = min(fitness)
-    bobot = []
-    for f in fitness:
-        bobot.append(f - terkecil + 1)
-    return random.choices(populasi, weights=bobot)[0]
+    return random.choices(populasi, weights=fitness)[0]
 
 
 def crossover(a, b):
     titik = random.randint(1, len(a) - 1)
-    anak1 = a[:titik] + b[titik:]
-    anak2 = b[:titik] + a[titik:]
-    return anak1, anak2
+    return a[:titik] + b[titik:], b[:titik] + a[titik:]
 
 
 def perbaiki(problem, anak, cadangan):
@@ -25,10 +24,10 @@ def perbaiki(problem, anak, cadangan):
     urutan = list(range(len(anak)))
     random.shuffle(urutan)
     for i in urutan:
-        for pos in [anak[i], cadangan[i]]:
-            if pos == OUT:
+        for posisi in [anak[i], cadangan[i]]:
+            if posisi == OUT:
                 continue
-            hasil[i] = pos
+            hasil[i] = posisi
             if check_placement(problem, tuple(hasil)):
                 break
             hasil[i] = OUT
@@ -42,78 +41,42 @@ def mutasi(problem, state):
     return baru
 
 
-def run_ga(problem, objective="fee", populasi=50, iterasi=200, seed=None,
-           p_crossover=0.9, p_mutasi=0.3):
-    if seed is not None:
-        random.seed(seed)
-    if objective == "eta":
-        nilai = eta_value
-    else:
-        nilai = value_fee
+def genetic_algorithm(problem, objective="fee", jumlah_populasi=50, iterasi=200):
+    populasi = []
+    for i in range(jumlah_populasi):
+        populasi.append(random_state(problem))
+    fitness = [hitung_nilai(problem, s, objective) for s in populasi]
 
-    mulai = time.time()
-
-    pop = []
-    for _ in range(populasi):
-        pop.append(random_state(problem))
-    fitness = [nilai(problem, s) for s in pop]
-
-    idx = fitness.index(max(fitness))
-    state_awal = pop[idx]
-    nilai_awal = fitness[idx]
-    terbaik = pop[idx]
-    nilai_terbaik = fitness[idx]
-
+    terbaik = populasi[fitness.index(max(fitness))]
+    awal = terbaik
     riwayat_max = [max(fitness)]
-    riwayat_rata = [sum(fitness) / populasi]
+    riwayat_rata = [sum(fitness) / jumlah_populasi]
 
     for gen in range(iterasi):
-        pop_baru = [pop[fitness.index(max(fitness))]]
+        baru = [populasi[fitness.index(max(fitness))]]
 
-        while len(pop_baru) < populasi:
-            a = pilih_induk(pop, fitness)
-            b = pilih_induk(pop, fitness)
-            if random.random() < p_crossover:
-                anak1, anak2 = crossover(a, b)
-                if not check_placement(problem, anak1):
-                    anak1 = perbaiki(problem, anak1, b)
-                if not check_placement(problem, anak2):
-                    anak2 = perbaiki(problem, anak2, a)
-            else:
-                anak1, anak2 = a, b
+        while len(baru) < jumlah_populasi:
+            a = pilih_induk(populasi, fitness)
+            b = pilih_induk(populasi, fitness)
+            anak1, anak2 = crossover(a, b)
+            if not check_placement(problem, anak1):
+                anak1 = perbaiki(problem, anak1, b)
+            if not check_placement(problem, anak2):
+                anak2 = perbaiki(problem, anak2, a)
 
             for anak in [anak1, anak2]:
-                if random.random() < p_mutasi:
+                if random.random() < 0.3:
                     anak = mutasi(problem, anak)
-                if len(pop_baru) < populasi:
-                    pop_baru.append(anak)
+                if len(baru) < jumlah_populasi:
+                    baru.append(anak)
 
-        pop = pop_baru
-        fitness = [nilai(problem, s) for s in pop]
+        populasi = baru
+        fitness = [hitung_nilai(problem, s, objective) for s in populasi]
 
-        if max(fitness) > nilai_terbaik:
-            nilai_terbaik = max(fitness)
-            terbaik = pop[fitness.index(nilai_terbaik)]
+        if max(fitness) > hitung_nilai(problem, terbaik, objective):
+            terbaik = populasi[fitness.index(max(fitness))]
 
         riwayat_max.append(max(fitness))
-        riwayat_rata.append(sum(fitness) / populasi)
+        riwayat_rata.append(sum(fitness) / jumlah_populasi)
 
-    durasi = time.time() - mulai
-
-    return {
-        "algorithm": "ga",
-        "objective": objective,
-        "dataset": problem["name"],
-        "seed": seed,
-        "params": {"population": populasi, "iterations": iterasi,
-                   "p_crossover": p_crossover, "p_mutasi": p_mutasi},
-        "initial_state": state_awal,
-        "final_state": terbaik,
-        "initial_value": nilai_awal,
-        "final_value": nilai_terbaik,
-        "final_fee": value_fee(problem, terbaik),
-        "zone_violations": count_misplaced_urgent(problem, terbaik),
-        "history": riwayat_max,
-        "duration_s": durasi,
-        "extra": {"avg_history": riwayat_rata},
-    }
+    return awal, terbaik, riwayat_max, riwayat_rata
