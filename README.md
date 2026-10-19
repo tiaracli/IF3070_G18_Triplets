@@ -16,7 +16,10 @@ python3 src/data/make_data.py
 python3 src/run_hill_climbing.py
 python3 src/run_sa.py
 python3 src/run_geneticalgorithm.py
+python3 src/run_visual.py
 ```
+
+`run_visual.py` dijalankan paling akhir karena gambarnya diambil dari file hasil hill climbing dan simulated annealing.
 
 ## Isi folder `src`
 
@@ -35,6 +38,7 @@ python3 src/run_geneticalgorithm.py
 | `run_hill_climbing.py` | Menjalankan eksperimen hill climbing |
 | `run_sa.py` | Menjalankan eksperimen simulated annealing |
 | `run_geneticalgorithm.py` | Menjalankan eksperimen genetic algorithm dan bonusnya |
+| `run_visual.py` | Membuat gambar kapal dan grafik untuk hasil hill climbing dan simulated annealing |
 
 ## Isi folder `output/ga`
 
@@ -47,6 +51,16 @@ python3 src/run_geneticalgorithm.py
 | `..._grafik.png` | Nilai objective maksimum dan rata-rata populasi terhadap iterasi |
 
 Contoh: `A_pop50_iter100_run1_akhir.png` artinya percobaan A, populasi 50, iterasi 100, run 1, state akhir.
+
+## Gambar hill climbing dan simulated annealing
+
+| Folder | Nama gambar |
+|---|---|
+| `output/hc` | `<varian>_fee_seed<seed>_{awal,akhir,grafik}.png` |
+| `output/bonus_eta` | `<varian>_eta_seed<seed>_{awal,akhir,grafik}.png` |
+| `output/sa` | `<kasus>_run<k>_{awal,akhir,grafik,peluang}.png` |
+
+`_peluang.png` adalah grafik e^(dE/T) terhadap iterasi untuk simulated annealing.
 
 ## Pembagian tugas
 
