@@ -1,7 +1,7 @@
 bonus,run,nilai_awal,nilai_akhir,fee_akhir,salah_zona,durasi_detik
-bonus_eta,1,246,308,308,0,0.774
-bonus_eta,2,255.0,276,276,0,0.902
-bonus_eta,3,243.0,296,296,0,0.865
-bonus_multi,1,440,502,502,3,1.874
+bonus_eta,1,246,308,308,0,0.775
+bonus_eta,2,255.0,276,276,0,0.869
+bonus_eta,3,243.0,296,296,0,0.846
+bonus_multi,1,440,502,502,3,1.773
 bonus_multi,2,472,504,504,1,1.524
-bonus_multi,3,422,470,470,2,1.635
+bonus_multi,3,422,470,470,2,1.625
