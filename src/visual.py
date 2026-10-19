@@ -1,87 +1,148 @@
-import os
-
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-from core import (get_vehicle_size, value_fee, eta_value, count_misplaced_urgent,
-                  ETA_URGENT)
+from core import get_vehicle_cells, value_fee, eta_value
 
-WARNA = {"mini": "skyblue", "sedan": "lightgreen", "suv": "gold", "truk": "orange"}
+UNGU = "#5D1C6A"
+PINK = "#CA5995"
+PEACH = "#FFB090"
+KREM = "#FFF1D3"
+ABU = "#E4DCE6"
+
+JENIS = {
+    "motor": ("M", "Motor", KREM, "black"),
+    "sedan": ("S", "Sedan", PEACH, "black"),
+    "suv": ("V", "SUV", PINK, "white"),
+    "truk": ("T", "Truk", UNGU, "white"),
+}
 
 
-def tipe(vid):
-    return vid.rstrip("0123456789")
+def tipe(id_kendaraan):
+    return id_kendaraan.rstrip("0123456789")
 
 
-def gambar_state(problem, state, judul, path):
-    kapal_list = problem["ships"]
+def gambar_kapal(problem, state, judul, path):
+    kapal = problem["ships"]
     kendaraan = problem["vehicles"]
-    n = len(kapal_list)
+    lebar = [4] + [k["w"] for k in kapal]
 
-    fig, axes = plt.subplots(1, n + 1, figsize=(5 * n + 4, 6))
+    fig, axes = plt.subplots(1, len(kapal) + 1, figsize=(4 + sum(lebar[1:]) * 0.85, 7.5),
+                             gridspec_kw={"width_ratios": lebar})
 
-    for k in range(n):
-        ax = axes[k]
-        W = kapal_list[k]["w"]
-        L = kapal_list[k]["l"]
+    kiri = axes[0]
+    kiri.axis("off")
+    kiri.set_xlim(0, 4)
+    kiri.set_ylim(0, 10)
+    kiri.text(2, 9.4, "Jenis Kendaraan", ha="center", fontsize=11)
+    y = 8.3
+    for t in JENIS:
+        huruf, nama, warna, tulisan = JENIS[t]
+        kiri.add_patch(Rectangle((0.3, y), 3.4, 0.7, facecolor=warna))
+        kiri.text(2, y + 0.35, huruf + " (" + nama + ")", ha="center", va="center",
+                  color=tulisan, fontsize=10)
+        y -= 1
 
-        ax.add_patch(Rectangle((0, 0), W, L // 2, color="aliceblue"))
-        ax.plot([0, W], [0, 0], color="red", linewidth=5)
-        ax.text(W / 2, -0.6, "PINTU RAMP", color="red", ha="center")
+    jumlah = 0
+    for i in range(len(kendaraan)):
+        if state[i][0] != -1:
+            jumlah += 1
 
+    nilai_eta = eta_value(problem, state)
+    if nilai_eta == int(nilai_eta):
+        nilai_eta = int(nilai_eta)
+
+    info = ["Value Fee = " + str(value_fee(problem, state)),
+            "Nilai ETA = " + str(nilai_eta),
+            "Jumlah kendaraan = " + str(jumlah)]
+    for k in range(len(kapal)):
         berat = 0
         for i in range(len(kendaraan)):
-            v = kendaraan[i]
-            kapal, x, y, o = state[i]
-            if kapal != k:
+            if state[i][0] == k:
+                berat += kendaraan[i]["weight"]
+        if len(kapal) == 1:
+            info.append("Berat kapal = " + str(berat))
+        else:
+            info.append("Berat kapal " + str(k + 1) + " = " + str(berat))
+
+    y = 3.9
+    for baris in info:
+        kiri.text(0.3, y, baris, fontsize=10)
+        y -= 0.55
+
+    for k in range(len(kapal)):
+        ax = axes[k + 1]
+        W = kapal[k]["w"]
+        L = kapal[k]["l"]
+
+        isi = {}
+        for i in range(len(kendaraan)):
+            if state[i][0] != k:
                 continue
-            w, l = get_vehicle_size(v, o)
-            berat += v["weight"]
-            tebal = 3 if v["eta"] <= ETA_URGENT else 1
-            ax.add_patch(Rectangle((x, y), w, l, facecolor=WARNA[tipe(v["id"])],
-                                   edgecolor="black", linewidth=tebal))
-            ax.text(x + w / 2, y + l / 2, v["id"] + "\n" + o, ha="center",
-                    va="center", fontsize=7)
+            for sel in get_vehicle_cells(kendaraan[i], state[i]):
+                isi[sel] = kendaraan[i]["id"]
 
-        ax.set_xlim(0, W)
-        ax.set_ylim(-1, L)
-        ax.set_xticks(range(W + 1))
-        ax.set_yticks(range(L + 1))
-        ax.grid(True, color="lightgray")
+        for x in range(W):
+            for yy in range(L):
+                if (x, yy) in isi:
+                    id_kendaraan = isi[(x, yy)]
+                    huruf, nama, warna, tulisan = JENIS[tipe(id_kendaraan)]
+                    label = huruf + id_kendaraan[len(tipe(id_kendaraan)):]
+                    ax.add_patch(Rectangle((x, yy), 1, 1, facecolor=warna, edgecolor="black", linewidth=0.8))
+                    ax.text(x + 0.5, yy + 0.5, label, ha="center", va="center", color=tulisan, fontsize=10)
+                else:
+                    ax.add_patch(Rectangle((x, yy), 1, 1, facecolor="white", edgecolor="black", linewidth=0.8))
+
+        ax.add_patch(Rectangle((0, -0.5), W, 0.45, facecolor="#E1E4E8"))
+        ax.text(W / 2, -1.1, "Pintu Masuk", ha="center", fontsize=11)
+        if len(kapal) > 1:
+            ax.text(W / 2, L + 0.3, "Kapal " + str(k + 1), ha="center", fontsize=11)
+
+        ax.set_xlim(-0.1, W + 0.1)
+        ax.set_ylim(-1.4, L + 0.8)
         ax.set_aspect("equal")
-        ax.set_title(kapal_list[k]["id"] + " (berat " + str(berat) + "/" +
-                     str(kapal_list[k]["capacity"]) + ")")
+        ax.axis("off")
 
-    info = axes[n]
-    info.axis("off")
-    di_luar = [kendaraan[i] for i in range(len(kendaraan)) if state[i][0] == -1]
-    teks = "Fee total: " + str(value_fee(problem, state)) + "\n"
-    teks += "Nilai ETA: " + str(eta_value(problem, state)) + "\n"
-    teks += "Salah zona: " + str(count_misplaced_urgent(problem, state)) + "\n\n"
-    teks += "Di luar kapal (" + str(len(di_luar)) + "):\n"
-    for v in di_luar:
-        teks += "- " + v["id"] + " fee " + str(v["fee"]) + ", eta " + str(v["eta"]) + "\n"
-    teks += "\nGaris tebal = ETA <= " + str(ETA_URGENT)
-    teks += "\nArsir biru = zona depan"
-    info.text(0, 1, teks, va="top", fontsize=9)
-
-    fig.suptitle(judul)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    fig.savefig(path, dpi=120, bbox_inches="tight")
+    fig.suptitle("Posisi Kendaraan Pada Kapal", fontsize=16, fontweight="bold", y=0.98)
+    fig.text(0.5, 0.92, judul, ha="center", fontsize=11, fontweight="bold", color="black")
+    fig.savefig(path, dpi=110, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
 
-def plot_ga(hasil, judul, path):
-    plt.figure(figsize=(7, 4))
-    plt.plot(hasil["history"], label="maksimum")
-    plt.plot(hasil["extra"]["avg_history"], label="rata-rata populasi")
-    plt.xlabel("iterasi (generasi)")
-    plt.ylabel("objective")
-    plt.title(judul)
-    plt.legend()
-    plt.grid(True)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    plt.savefig(path, dpi=120)
+def grafik_objective(riwayat, judul, path):
+    plt.figure(figsize=(7, 3.6))
+    plt.plot(riwayat, color=UNGU, linewidth=2)
+    plt.xlabel("iterasi")
+    plt.ylabel("nilai objective")
+    plt.title(judul, color=UNGU)
+    plt.grid(color=ABU)
+    plt.savefig(path, dpi=110, bbox_inches="tight")
+    plt.close()
+
+
+def grafik_ga(riwayat_max, riwayat_rata, judul, path):
+    plt.figure(figsize=(7, 3.6))
+    plt.plot(riwayat_max, color=UNGU, linewidth=2, label="maksimum populasi")
+    plt.plot(riwayat_rata, color=PINK, linewidth=2, label="rata-rata populasi")
+    plt.xlabel("iterasi")
+    plt.ylabel("nilai objective")
+    plt.title(judul, color=UNGU)
+    plt.grid(color=ABU)
+    plt.legend(frameon=False)
+    plt.savefig(path, dpi=110, bbox_inches="tight")
+    plt.close()
+
+
+def grafik_peluang(peluang, judul, path):
+    x = [p[0] for p in peluang]
+    y = [p[1] for p in peluang]
+    plt.figure(figsize=(7, 3.6))
+    plt.scatter(x, y, s=8, color=PINK, alpha=0.5)
+    plt.ylim(-0.03, 1.03)
+    plt.xlabel("iterasi")
+    plt.ylabel("e^(dE/T)")
+    plt.title(judul, color=UNGU)
+    plt.grid(color=ABU)
+    plt.savefig(path, dpi=110, bbox_inches="tight")
     plt.close()

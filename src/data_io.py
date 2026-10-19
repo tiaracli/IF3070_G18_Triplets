@@ -1,29 +1,21 @@
-import json
+import csv
 import os
 
-from core import load_problem as baca_json
-
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-def load_problem(nama):
-    problem = baca_json(os.path.join(ROOT, "src", "data", nama + ".json"))
-    problem["name"] = nama
-    return problem
+FOLDER_SRC = os.path.dirname(os.path.abspath(__file__))
+FOLDER_OUTPUT = os.path.join(FOLDER_SRC, "..", "output")
 
 
-def simpan_hasil(hasil, path):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    data = dict(hasil)
-    for key in ["initial_state", "final_state"]:
-        data[key] = [list(p) for p in data[key]]
-    with open(path, "w") as f:
-        json.dump(data, f, indent=1)
+def path_data(nama):
+    return os.path.join(FOLDER_SRC, "data", nama + ".json")
 
 
-def baca_hasil(path):
-    with open(path) as f:
-        data = json.load(f)
-    for key in ["initial_state", "final_state"]:
-        data[key] = tuple(tuple(p) for p in data[key])
-    return data
+def path_output(folder, nama_file):
+    os.makedirs(os.path.join(FOLDER_OUTPUT, folder), exist_ok=True)
+    return os.path.join(FOLDER_OUTPUT, folder, nama_file)
+
+
+def simpan_csv(baris, folder, nama_file):
+    with open(path_output(folder, nama_file), "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=baris[0].keys())
+        writer.writeheader()
+        writer.writerows(baris)

@@ -4,17 +4,17 @@ import os
 FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 TIPE_1 = {
-    "mini": (1, 2, 1, 10, 4),
+    "motor": (1, 2, 1, 10, 4),
     "sedan": (2, 3, 2, 30, 4),
     "suv": (2, 4, 3, 38, 3),
-    "truk": (3, 5, 5, 70, 2),
+    "truk": (3, 4, 5, 70, 2),
 }
 
 TIPE_MULTI = {
-    "mini": (1, 2, 1, 10, 6),
+    "motor": (1, 2, 1, 10, 6),
     "sedan": (2, 3, 2, 30, 6),
     "suv": (2, 4, 3, 38, 5),
-    "truk": (3, 5, 5, 70, 3),
+    "truk": (3, 4, 5, 70, 3),
 }
 
 
