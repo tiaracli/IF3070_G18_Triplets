@@ -35,13 +35,20 @@ def gambar_kapal(problem, state, judul, path):
     kiri.axis("off")
     kiri.set_xlim(0, 4)
     kiri.set_ylim(0, 10)
-    kiri.text(2, 9.4, "Jenis Kendaraan", ha="center", fontsize=11)
+    ukuran = {}
+    for v in kendaraan:
+        if tipe(v["id"]) not in ukuran:
+            ukuran[tipe(v["id"])] = str(v["w"]) + " x " + str(v["l"])
+
+    kiri.text(1.4, 9.4, "Jenis Kendaraan", ha="center", fontsize=11)
+    kiri.text(3.3, 9.4, "Ukuran", ha="center", fontsize=11)
     y = 8.3
     for t in JENIS:
         huruf, nama, warna, tulisan = JENIS[t]
-        kiri.add_patch(Rectangle((0.3, y), 3.4, 0.7, facecolor=warna))
-        kiri.text(2, y + 0.35, huruf + " (" + nama + ")", ha="center", va="center",
+        kiri.add_patch(Rectangle((0.3, y), 2.2, 0.7, facecolor=warna))
+        kiri.text(1.4, y + 0.35, huruf + " (" + nama + ")", ha="center", va="center",
                   color=tulisan, fontsize=10)
+        kiri.text(3.3, y + 0.35, ukuran.get(t, "-"), ha="center", va="center", fontsize=10)
         y -= 1
 
     jumlah = 0
@@ -142,6 +149,40 @@ def grafik_peluang(peluang, judul, path):
     plt.ylim(-0.03, 1.03)
     plt.xlabel("iterasi")
     plt.ylabel("e^(dE/T)")
+    plt.title(judul, color=UNGU)
+    plt.grid(color=ABU)
+    plt.savefig(path, dpi=110, bbox_inches="tight")
+    plt.close()
+
+
+def grafik_banding(daftar_riwayat, daftar_label, judul, path, tebal=3):
+    warna = [UNGU, PINK, PEACH, UNGU]
+    gaya = ["-", "-", "-", "--"]
+    plt.figure(figsize=(7, 3.6))
+    for i in range(len(daftar_riwayat)):
+        plt.plot(daftar_riwayat[i], color=warna[i % 4], linestyle=gaya[i % 4],
+                 linewidth=tebal - i * tebal / 5, label=daftar_label[i])
+    plt.xlabel("iterasi")
+    plt.ylabel("nilai objective")
+    plt.title(judul, color=UNGU)
+    plt.grid(color=ABU)
+    plt.legend(frameon=False)
+    plt.savefig(path, dpi=110, bbox_inches="tight")
+    plt.close()
+
+
+def grafik_restart(semua_riwayat, judul, path):
+    plt.figure(figsize=(7, 3.6))
+    awal = 0
+    for i in range(len(semua_riwayat)):
+        riwayat = semua_riwayat[i]
+        x = list(range(awal, awal + len(riwayat)))
+        plt.plot(x, riwayat, color=UNGU, linewidth=2)
+        if i > 0:
+            plt.axvline(awal, color=PINK, linestyle="--", linewidth=1)
+        awal += len(riwayat)
+    plt.xlabel("iterasi (garis putus-putus = restart)")
+    plt.ylabel("nilai objective")
     plt.title(judul, color=UNGU)
     plt.grid(color=ABU)
     plt.savefig(path, dpi=110, bbox_inches="tight")

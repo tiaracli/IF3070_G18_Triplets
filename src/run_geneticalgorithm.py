@@ -30,9 +30,9 @@ for kode, populasi, iterasi in percobaan:
         durasi = time.time() - mulai
 
         nama = kode + "_pop" + str(populasi) + "_iter" + str(iterasi) + "_run" + str(run)
-        judul = "GA populasi " + str(populasi) + " iterasi " + str(iterasi) + " run " + str(run)
-        gambar_kapal(kasus_1, awal, judul + " - state awal", path_output("ga", nama + "_awal.png"))
-        gambar_kapal(kasus_1, akhir, judul + " - state akhir", path_output("ga", nama + "_akhir.png"))
+        judul = "Genetic Algorithm populasi " + str(populasi) + ", iterasi " + str(iterasi) + ", run " + str(run)
+        gambar_kapal(kasus_1, awal, judul + " (awal)", path_output("ga", nama + "_awal.png"))
+        gambar_kapal(kasus_1, akhir, judul + " (akhir)", path_output("ga", nama + "_akhir.png"))
         grafik_ga(riwayat_max, riwayat_rata, judul, path_output("ga", nama + "_grafik.png"))
 
         hasil.append({
@@ -45,12 +45,13 @@ for kode, populasi, iterasi in percobaan:
             "salah_zona": count_misplaced_urgent(kasus_1, akhir),
             "durasi_detik": round(durasi, 3),
         })
-        print(nama, "awal:", value_fee(kasus_1, awal), "akhir:", value_fee(kasus_1, akhir))
+        print(nama, "awal =", value_fee(kasus_1, awal), "akhir =", value_fee(kasus_1, akhir))
 
 simpan_csv(hasil, "ga", "hasil.csv")
 
 bonus = []
-for nama_bonus, problem, objective in [("bonus_eta", kasus_1, "eta"), ("bonus_multi", kasus_multi, "fee")]:
+for nama_bonus, problem, objective, keterangan in [("bonus_eta", kasus_1, "eta", "objective ETA"),
+                                                  ("bonus_multi", kasus_multi, "fee", "kasus_multi_kapal")]:
     for run in [1, 2, 3]:
         random.seed(run)
         mulai = time.time()
@@ -58,9 +59,9 @@ for nama_bonus, problem, objective in [("bonus_eta", kasus_1, "eta"), ("bonus_mu
         durasi = time.time() - mulai
 
         nama = nama_bonus + "_run" + str(run)
-        judul = "GA " + nama_bonus.replace("_", " ") + " run " + str(run)
-        gambar_kapal(problem, awal, judul + " - state awal", path_output("ga", nama + "_awal.png"))
-        gambar_kapal(problem, akhir, judul + " - state akhir", path_output("ga", nama + "_akhir.png"))
+        judul = "Genetic Algorithm " + keterangan + ", run " + str(run)
+        gambar_kapal(problem, awal, judul + " (awal)", path_output("ga", nama + "_awal.png"))
+        gambar_kapal(problem, akhir, judul + " (akhir)", path_output("ga", nama + "_akhir.png"))
         grafik_ga(riwayat_max, riwayat_rata, judul, path_output("ga", nama + "_grafik.png"))
 
         bonus.append({
@@ -72,7 +73,7 @@ for nama_bonus, problem, objective in [("bonus_eta", kasus_1, "eta"), ("bonus_mu
             "salah_zona": count_misplaced_urgent(problem, akhir),
             "durasi_detik": round(durasi, 3),
         })
-        print(nama, "akhir:", hitung_nilai(problem, akhir, objective))
+        print(nama, "akhir =", hitung_nilai(problem, akhir, objective))
 
 simpan_csv(bonus, "ga", "hasil_bonus.csv")
 print("selesai, hasil ada di output/ga")
