@@ -11,19 +11,19 @@ D D . . B B J J
 . . F F F . . C
 . . F F F . . C
 
-Di luar: mini1, sedan1, suv1, truk1, truk2
-Legenda: A=mini1, B=mini2, C=mini3, D=mini4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
+Di luar: motor1, sedan1, suv1, truk1, truk2
+Legenda: A=motor1, B=motor2, C=motor3, D=motor4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
 
-STATE AKHIR (value_fee 284)
+STATE AKHIR (value_fee 296)
 kapal1 (muatan 22/22)
-B K K L L L J J
-B K K L L L J J
-C K K L L L J J
-C K K L L L J J
-. I I L L L E E
-A I I . . . E E
-A I I H H H E E
-. I I H H H D D
+. G G G J J J J
+. G G G J J J J
+. . M M M L L L
+C C M M M L L L
+I I M M M L L L
+I I M M M L L L
+I I . . F F F A
+I I . . F F F A
 
-Di luar: sedan2, sedan3, truk2
-Legenda: A=mini1, B=mini2, C=mini3, D=mini4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
+Di luar: motor2, motor4, sedan1, sedan4, suv3
+Legenda: A=motor1, B=motor2, C=motor3, D=motor4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2

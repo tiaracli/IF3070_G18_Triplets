@@ -3,27 +3,27 @@
 STATE AWAL (value_fee 188)
 kapal1 (muatan 14/22)
 G G G D D . . .
-G G G L L L L L
-. . . L L L L L
-E E E L L L L L
+G G G L L L L .
+. . . L L L L .
+E E E L L L L .
 E E E . . . J J
 . . . . . . J J
 . . . C C . J J
 . . . . . . J J
 
-Di luar: mini1, mini2, sedan2, sedan4, suv1, suv3, truk2
-Legenda: A=mini1, B=mini2, C=mini3, D=mini4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
+Di luar: motor1, motor2, sedan2, sedan4, suv1, suv3, truk2
+Legenda: A=motor1, B=motor2, C=motor3, D=motor4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
 
-STATE AKHIR (value_fee 274)
-kapal1 (muatan 21/22)
-. F F F E E K K
-. F F F E E K K
-G G G B E E K K
-G G G B . . K K
-J J J J H H H .
-J J J J H H H .
-I I I I D D . A
-I I I I C C . A
+STATE AKHIR (value_fee 296)
+kapal1 (muatan 22/22)
+K K K K L L L L
+K K K K L L L L
+M M M M L L L L
+M M M M . H H .
+M M M M . H H .
+G G . D D H H .
+G G . . I I I I
+G G B B I I I I
 
-Di luar: truk1, truk2
-Legenda: A=mini1, B=mini2, C=mini3, D=mini4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
+Di luar: motor1, motor3, sedan1, sedan2, suv2
+Legenda: A=motor1, B=motor2, C=motor3, D=motor4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
