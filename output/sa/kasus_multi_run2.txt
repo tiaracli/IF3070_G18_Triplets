@@ -1,0 +1,45 @@
+=== kasus_multi run 2 (seed 22) ===
+
+STATE AWAL (value_fee 424)
+kapal1 (muatan 17/22)
+. . . S S S . .
+R R R S S S H H
+R R R S S S H H
+R R R S S S H H
+R R R . . . . .
+. . M M M M D D
+. . M M M M F .
+. . . . . . F .
+
+kapal2 (muatan 15/16)
+T T T C . A A .
+T T T C . . . .
+T T T I I I P P
+T T T I I I P P
+. O O O O . P P
+. O O O O . P P
+
+Di luar: motor2, motor5, sedan1, sedan4, sedan5, sedan6, suv2, suv5
+Legenda: A=motor1, B=motor2, C=motor3, D=motor4, E=motor5, F=motor6, G=sedan1, H=sedan2, I=sedan3, J=sedan4, K=sedan5, L=sedan6, M=suv1, N=suv2, O=suv3, P=suv4, Q=suv5, R=truk1, S=truk2, T=truk3
+
+STATE AKHIR (value_fee 512)
+kapal1 (muatan 22/22)
+S S S K K . . .
+S S S K K H H B
+S S S K K H H B
+S S S G G H H .
+N N . G G T T T
+N N . G G T T T
+N N D D . T T T
+N N . A A T T T
+
+kapal2 (muatan 16/16)
+Q Q Q Q . . P P
+Q Q Q Q L L P P
+R R R . L L P P
+R R R . L L P P
+R R R M M M M .
+R R R M M M M .
+
+Di luar: motor3, motor5, motor6, sedan3, sedan4, suv3
+Legenda: A=motor1, B=motor2, C=motor3, D=motor4, E=motor5, F=motor6, G=sedan1, H=sedan2, I=sedan3, J=sedan4, K=sedan5, L=sedan6, M=suv1, N=suv2, O=suv3, P=suv4, Q=suv5, R=truk1, S=truk2, T=truk3
