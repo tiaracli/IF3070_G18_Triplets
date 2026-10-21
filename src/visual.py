@@ -141,7 +141,7 @@ def grafik_ga(riwayat_max, riwayat_rata, judul, path):
     plt.close()
 
 
-def grafik_peluang(peluang, judul, path):
+def grafik_prob(peluang, judul, path):
     x = [p[0] for p in peluang]
     y = [p[1] for p in peluang]
     plt.figure(figsize=(7, 3.6))

@@ -3,7 +3,7 @@ import os
 
 from core import read_data
 from data_io import FOLDER_OUTPUT, path_data, path_output
-from visual import gambar_kapal, grafik_objective, grafik_peluang, grafik_banding, grafik_restart
+from visual import gambar_kapal, grafik_objective, grafik_prob, grafik_banding, grafik_restart
 
 NAMA_HC = {
     "steepest": "Steepest Ascent",
@@ -21,14 +21,12 @@ NAMA_KASUS = {
 def ubah_state(state):
     return tuple(tuple(p) for p in state)
 
-
 def baca_json(folder, nama_file):
     path = os.path.join(FOLDER_OUTPUT, folder, nama_file)
     if not os.path.exists(path):
         return None
     with open(path) as f:
         return json.load(f)
-
 
 def visual_hc(problem, folder, nama_file):
     data = baca_json(folder, nama_file)
@@ -74,7 +72,7 @@ def visual_hc(problem, folder, nama_file):
                        path_output(folder, "banding_seed" + str(seed) + ".png"))
 
 
-def gambar_sa(kasus):
+def visual_sa(kasus):
     problem = read_data(path_data(kasus))
     riwayat = []
     label = []
@@ -95,7 +93,7 @@ def gambar_sa(kasus):
         for i in range(len(d["probs"])):
             if d["probs"][i] is not None:
                 peluang.append((i + 1, d["probs"][i]))
-        grafik_peluang(peluang, judul, path_output("sa", nama + "_peluang.png"))
+        grafik_prob(peluang, judul, path_output("sa", nama + "_peluang.png"))
 
         riwayat.append(d["history"])
         label.append("run " + str(k))
@@ -109,6 +107,6 @@ def gambar_sa(kasus):
 problem = read_data(path_data("kasus_1"))
 visual_hc(problem, "hc", "detail_hc.json")
 visual_hc(problem, "bonus_eta", "detail_eta.json")
-gambar_sa("kasus_1")
-gambar_sa("kasus_multi")
+visual_sa("kasus_1")
+visual_sa("kasus_multi")
 print("selesai, gambar ada di output/hc, output/bonus_eta, output/sa")

@@ -10,7 +10,7 @@ from hill_climbing import (steepestascent_hc, stochastic_hc,
 from sa import simulated_annealing
 from geneticalgorithm import genetic_algorithm
 from data_io import path_data, path_output
-from visual import gambar_kapal, grafik_objective, grafik_ga, grafik_peluang, grafik_restart
+from visual import gambar_kapal, grafik_objective, grafik_ga, grafik_prob, grafik_restart
 
 ALGORITMA = {
     "1": "Steepest Ascent Hill Climbing",
@@ -276,7 +276,7 @@ def simpan_gambar(problem, hasil, judul):
 
     dibuka = [akhir, grafik]
     if "peluang" in hasil:
-        grafik_peluang(hasil["peluang"], judul, peluang)
+        grafik_prob(hasil["peluang"], judul, peluang)
         dibuka.append(peluang)
     elif os.path.exists(peluang):
         os.remove(peluang)
