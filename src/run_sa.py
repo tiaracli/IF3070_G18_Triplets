@@ -12,10 +12,10 @@ from core import read_data, show_layout, value_fee
 from sa import simulated_annealing
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-SEEDS = [11, 22, 33]   # seed dicatat supaya hasil bisa diulang
+SEEDS = [11, 22, 33]      # seednya dicatat 
 
 
-def simpan_run(problem, hasil, nama, k, folder):
+def simpan_result(problem, hasil, nama, k, folder):
     data = dict(hasil)
     for kunci in ("initial_state", "final_state", "best_state"):
         data[kunci] = [list(p) for p in hasil[kunci]]
@@ -30,40 +30,7 @@ def simpan_run(problem, hasil, nama, k, folder):
         f.write(f"STATE AKHIR (value_fee {value_fee(problem, hasil['final_state'])})\n")
         f.write(show_layout(problem, hasil["final_state"]) + "\n")
 
-
-def plot_objective(hasil_list, nama, folder):
-    fig, ax = plt.subplots(figsize=(9, 4.5))
-    for k, h in enumerate(hasil_list, 1):
-        ax.plot(h["history"], linewidth=0.8, label=f"run {k} (akhir {h['final_value']})")
-    ax.set_xlabel("iterasi")
-    ax.set_ylabel("objective (total ShippingFee, juta)")
-    ax.set_title(f"Simulated Annealing - {nama}: objective terhadap iterasi")
-    ax.legend(loc="lower right")
-    ax.grid(alpha=0.3)
-    fig.tight_layout()
-    fig.savefig(os.path.join(folder, f"{nama}_objective.png"), dpi=150)
-    plt.close(fig)
-
-
-def plot_prob(hasil_list, nama, folder):
-    fig, axes = plt.subplots(len(hasil_list), 1, figsize=(9, 3 * len(hasil_list)), sharex=True)
-    if len(hasil_list) == 1:
-        axes = [axes]
-    for k, (ax, h) in enumerate(zip(axes, hasil_list), 1):
-        xs = [i + 1 for i, p in enumerate(h["probs"]) if p is not None]
-        ys = [p for p in h["probs"] if p is not None]
-        ax.scatter(xs, ys, s=2, alpha=0.4)
-        ax.set_ylabel(f"run {k}\ne^(dE/T)")
-        ax.set_ylim(-0.02, 1.02)
-        ax.grid(alpha=0.3)
-    axes[-1].set_xlabel("iterasi")
-    axes[0].set_title(f"Simulated Annealing - {nama}: e^(dE/T) terhadap iterasi")
-    fig.tight_layout()
-    fig.savefig(os.path.join(folder, f"{nama}_prob.png"), dpi=150)
-    plt.close(fig)
-
-
-def ringkas(nama, hasil_list):
+def summary(nama, hasil_list):
     nilai = [h["final_value"] for h in hasil_list]
     return {
         "kasus": nama,
@@ -79,8 +46,7 @@ def ringkas(nama, hasil_list):
         "akhir_local_opt": f"{sum(h['final_local_opt'] for h in hasil_list)}/{len(hasil_list)}",
     }
 
-
-def tulis_ringkasan(baris, folder):
+def collect_summary(baris, folder):
     kolom = list(baris[0].keys())
     with open(os.path.join(folder, "ringkasan.csv"), "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=kolom)
@@ -91,7 +57,6 @@ def tulis_ringkasan(baris, folder):
         f.write("|" + "---|" * len(kolom) + "\n")
         for b in baris:
             f.write("| " + " | ".join(str(b[k]) for k in kolom) + " |\n")
-
 
 def main():
     ap = argparse.ArgumentParser()
@@ -111,15 +76,13 @@ def main():
             h = simulated_annealing(problem, T0=args.T0, alpha=args.alpha,
                                     T_min=args.tmin, seed=seed)
             hasil_list.append(h)
-            simpan_run(problem, h, nama, k, args.out)
+            simpan_result(problem, h, nama, k, args.out)
             print(f"{nama} run {k}: akhir={h['final_value']} terbaik={h['best_value']} "
                   f"iter={h['iterations']} durasi={h['duration']:.2f}s "
                   f"stuck={h['stuck_freq']:.2f} local_opt={h['final_local_opt']}")
-        plot_objective(hasil_list, nama, args.out)
-        plot_prob(hasil_list, nama, args.out)
-        semua.append(ringkas(nama, hasil_list))
+        semua.append(summary(nama, hasil_list))
 
-    tulis_ringkasan(semua, args.out)
+    collect_summary(semua, args.out)
     print("\nRingkasan disimpan di", args.out)
 
 
