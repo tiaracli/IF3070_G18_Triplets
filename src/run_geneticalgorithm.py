@@ -2,12 +2,12 @@ import random
 import time
 
 from core import read_data, value_fee, count_salahzona
-from geneticalgorithm import genetic_algorithm, hitung_nilai
-from data_io import path_data, path_output, simpan_csv
-from visual import gambar_kapal, grafik_ga
+from geneticalgorithm import genetic_algorithm, count_nilai_fitness
+from data_io import lokasi_data, lokasi_output, simpan_data_csv
+from visual import visual_kapal, visual_genetic_algorithm
 
-kasus_1 = read_data(path_data("kasus_1"))
-kasus_multi = read_data(path_data("kasus_multi"))
+kasus_1 = read_data(lokasi_data("kasus_1"))
+kasus_multi = read_data(lokasi_data("kasus_multi"))
 
 percobaan = [
     ("A", 50, 100),
@@ -31,10 +31,9 @@ for kode, populasi, iterasi in percobaan:
 
         nama = kode + "_pop" + str(populasi) + "_iter" + str(iterasi) + "_run" + str(run)
         judul = "Genetic Algorithm populasi " + str(populasi) + ", iterasi " + str(iterasi) + ", run " + str(run)
-        gambar_kapal(kasus_1, awal, judul + " (awal)", path_output("ga", nama + "_awal.png"))
-        gambar_kapal(kasus_1, akhir, judul + " (akhir)", path_output("ga", nama + "_akhir.png"))
-        grafik_ga(riwayat_max, riwayat_rata, judul, path_output("ga", nama + "_grafik.png"))
-
+        visual_kapal(kasus_1, awal, judul + " (awal)", lokasi_output("ga", nama + "_awal.png"))
+        visual_kapal(kasus_1, akhir, judul + " (akhir)", lokasi_output("ga", nama + "_akhir.png"))
+        visual_genetic_algorithm(riwayat_max, riwayat_rata, judul, lokasi_output("ga", nama + "_grafik.png"))
         hasil.append({
             "percobaan": kode,
             "populasi": populasi,
@@ -47,7 +46,7 @@ for kode, populasi, iterasi in percobaan:
         })
         print(nama, "awal =", value_fee(kasus_1, awal), "akhir =", value_fee(kasus_1, akhir))
 
-simpan_csv(hasil, "ga", "hasil.csv")
+simpan_data_csv(hasil, "ga", "hasil.csv")
 
 bonus = []
 for nama_bonus, problem, objective, keterangan in [("bonus_eta", kasus_1, "eta", "objective ETA"),
@@ -57,23 +56,21 @@ for nama_bonus, problem, objective, keterangan in [("bonus_eta", kasus_1, "eta",
         mulai = time.time()
         awal, akhir, riwayat_max, riwayat_rata = genetic_algorithm(problem, objective, 50, 200)
         durasi = time.time() - mulai
-
         nama = nama_bonus + "_run" + str(run)
         judul = "Genetic Algorithm " + keterangan + ", run " + str(run)
-        gambar_kapal(problem, awal, judul + " (awal)", path_output("ga", nama + "_awal.png"))
-        gambar_kapal(problem, akhir, judul + " (akhir)", path_output("ga", nama + "_akhir.png"))
-        grafik_ga(riwayat_max, riwayat_rata, judul, path_output("ga", nama + "_grafik.png"))
-
+        visual_kapal(problem, awal, judul + " (awal)", lokasi_output("ga", nama + "_awal.png"))
+        visual_kapal(problem, akhir, judul + " (akhir)", lokasi_output("ga", nama + "_akhir.png"))
+        visual_genetic_algorithm(riwayat_max, riwayat_rata, judul, lokasi_output("ga", nama + "_grafik.png"))
         bonus.append({
             "bonus": nama_bonus,
             "run": run,
-            "nilai_awal": hitung_nilai(problem, awal, objective),
-            "nilai_akhir": hitung_nilai(problem, akhir, objective),
+            "nilai_awal": count_nilai_fitness(problem, awal, objective),
+            "nilai_akhir": count_nilai_fitness(problem, akhir, objective),
             "fee_akhir": value_fee(problem, akhir),
             "salah_zona": count_salahzona(problem, akhir),
             "durasi_detik": round(durasi, 3),
         })
-        print(nama, "akhir =", hitung_nilai(problem, akhir, objective))
+        print(nama, "akhir =", count_nilai_fitness(problem, akhir, objective))
 
-simpan_csv(bonus, "ga", "hasil_bonus.csv")
+simpan_data_csv(bonus, "ga", "hasil_bonus.csv")
 print("selesai, hasil ada di output/ga")
