@@ -312,7 +312,7 @@ while True:
     seed = tanya_angka("Berapa seed yang mau dipakai?",
                        "Seed mengatur hasil acak. Seed yang sama akan selalu memberi hasil yang sama, "
                        "jadi percobaan bisa diulang.",
-                       0, 9999, 1)
+                       0, 500, 1)
 
     hasil = jalankan(problem, pilihan, objective, seed)
     tampilkan(problem, hasil, objective)
