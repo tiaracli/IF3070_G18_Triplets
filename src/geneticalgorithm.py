@@ -58,7 +58,10 @@ def genetic_algorithm(problem, objective="fee", jumlah_populasi=50, iterasi=200)
         while len(baru) < jumlah_populasi:
             a = pilih_induk(populasi, fitness)
             b = pilih_induk(populasi, fitness)
-            anak1, anak2 = crossover(a, b)
+            if random.random() < 0.9:
+                anak1, anak2 = crossover(a, b)
+            else:
+                anak1, anak2 = a, b
             if not check_placement(problem, anak1):
                 anak1 = perbaiki(problem, anak1, b)
             if not check_placement(problem, anak2):
