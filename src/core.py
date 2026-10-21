@@ -1,15 +1,12 @@
 import json
 
-
 OUT = (-1, 0, 0, "H")
 ETA_URGENT = 3
 ETA_PENALTY = 0.5
 
-
 def read_data(path):
     with open(path, "r") as f:
         return json.load(f)
-
 
 def ukuran_vehicle(vehicle, orientation):
     w = vehicle["w"]
@@ -19,7 +16,6 @@ def ukuran_vehicle(vehicle, orientation):
     elif orientation == "V":
         return l, w
     return None
-
 
 def posisi_vehicle(vehicle, placement):
     ship_idx, x, y, orientation = placement
@@ -33,7 +29,6 @@ def posisi_vehicle(vehicle, placement):
         for dy in range(l):
             cells.add((x + dx, y + dy))
     return cells
-
 
 def cek_placement(problem, state):
     ships = problem["ships"]
@@ -97,7 +92,6 @@ def cek_placement(problem, state):
 
     return True
 
-
 def value_fee(problem, state):
     vehicles = problem["vehicles"]
     total_fee = 0
@@ -106,7 +100,6 @@ def value_fee(problem, state):
         if placement[0] != -1:
             total_fee += vehicles[i]["fee"]
     return total_fee
-
 
 def dekat_ramp(problem, vehicle, placement):
     ship_idx, x, y, orientation = placement
@@ -118,7 +111,6 @@ def dekat_ramp(problem, vehicle, placement):
     ship_length = problem["ships"][ship_idx]["l"]
     front_limit = ship_length // 2
     return y + l <= front_limit
-
 
 def value_eta(problem, state):
     vehicles = problem["vehicles"]
@@ -135,7 +127,6 @@ def value_eta(problem, state):
         total_score += fee
     return total_score
 
-
 def count_salahzona(problem, state):
     vehicles = problem["vehicles"]
     count = 0
@@ -148,7 +139,6 @@ def count_salahzona(problem, state):
         if vehicle["eta"] <= ETA_URGENT and not dekat_ramp(problem, vehicle, placement):
             count += 1
     return count
-
 
 def show_layout(problem, state):
     if not cek_placement(problem, state):

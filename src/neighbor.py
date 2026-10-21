@@ -4,7 +4,6 @@ from core import OUT, ukuran_vehicle, cek_placement
 
 P_KELUAR = 0.15
 
-
 def sama_jenis(a, b):
     return all(a[k] == b[k] for k in ("w", "l", "weight", "fee", "eta"))
 
