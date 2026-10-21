@@ -5,6 +5,7 @@ from matplotlib.patches import Rectangle
 
 from core import posisi_vehicle, value_fee, value_eta
 
+# Warna Grafik Visual
 UNGU = "#5D1C6A"
 PINK = "#CA5995"
 PEACH = "#FFB090"
@@ -18,27 +19,24 @@ JENIS = {
     "truk": ("T", "Truk", UNGU, "white"),
 }
 
-
-def tipe(id_kendaraan):
+def jenis_vehicle(id_kendaraan):
     return id_kendaraan.rstrip("0123456789")
 
-
-def gambar_kapal(problem, state, judul, path):
+def visual_kapal(problem, state, judul, path):
     kapal = problem["ships"]
     kendaraan = problem["vehicles"]
     lebar = [4] + [k["w"] for k in kapal]
 
     fig, axes = plt.subplots(1, len(kapal) + 1, figsize=(4 + sum(lebar[1:]) * 0.85, 7.5),
                              gridspec_kw={"width_ratios": lebar})
-
     kiri = axes[0]
     kiri.axis("off")
     kiri.set_xlim(0, 4)
     kiri.set_ylim(0, 10)
     ukuran = {}
     for v in kendaraan:
-        if tipe(v["id"]) not in ukuran:
-            ukuran[tipe(v["id"])] = str(v["w"]) + " x " + str(v["l"])
+        if jenis_vehicle(v["id"]) not in ukuran:
+            ukuran[jenis_vehicle(v["id"])] = str(v["w"]) + " x " + str(v["l"])
 
     kiri.text(1.4, 9.4, "Jenis Kendaraan", ha="center", fontsize=11)
     kiri.text(3.3, 9.4, "Ukuran", ha="center", fontsize=11)
@@ -94,8 +92,8 @@ def gambar_kapal(problem, state, judul, path):
             for yy in range(L):
                 if (x, yy) in isi:
                     id_kendaraan = isi[(x, yy)]
-                    huruf, nama, warna, tulisan = JENIS[tipe(id_kendaraan)]
-                    label = huruf + id_kendaraan[len(tipe(id_kendaraan)):]
+                    huruf, nama, warna, tulisan = JENIS[jenis_vehicle(id_kendaraan)] 
+                    label = huruf + id_kendaraan[len(jenis_vehicle(id_kendaraan)):]
                     ax.add_patch(Rectangle((x, yy), 1, 1, facecolor=warna, edgecolor="black", linewidth=0.8))
                     ax.text(x + 0.5, yy + 0.5, label, ha="center", va="center", color=tulisan, fontsize=10)
                 else:
@@ -116,8 +114,7 @@ def gambar_kapal(problem, state, judul, path):
     fig.savefig(path, dpi=110, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
-
-def grafik_objective(riwayat, judul, path):
+def grafik_objective_kapal(riwayat, judul, path):
     plt.figure(figsize=(7, 3.6))
     plt.plot(riwayat, color=UNGU, linewidth=2)
     plt.xlabel("iterasi")
@@ -127,8 +124,7 @@ def grafik_objective(riwayat, judul, path):
     plt.savefig(path, dpi=110, bbox_inches="tight")
     plt.close()
 
-
-def grafik_ga(riwayat_max, riwayat_rata, judul, path):
+def visual_genetic_algorithm(riwayat_max, riwayat_rata, judul, path):
     plt.figure(figsize=(7, 3.6))
     plt.plot(riwayat_max, color=UNGU, linewidth=2, label="maksimum populasi")
     plt.plot(riwayat_rata, color=PINK, linewidth=2, label="rata-rata populasi")
@@ -154,8 +150,7 @@ def grafik_prob(peluang, judul, path):
     plt.savefig(path, dpi=110, bbox_inches="tight")
     plt.close()
 
-
-def grafik_banding(daftar_riwayat, daftar_label, judul, path, tebal=3):
+def visual_perbandingan(daftar_riwayat, daftar_label, judul, path, tebal=3):
     warna = [UNGU, PINK, PEACH, UNGU]
     gaya = ["-", "-", "-", "--"]
     plt.figure(figsize=(7, 3.6))
@@ -169,7 +164,6 @@ def grafik_banding(daftar_riwayat, daftar_label, judul, path, tebal=3):
     plt.legend(frameon=False)
     plt.savefig(path, dpi=110, bbox_inches="tight")
     plt.close()
-
 
 def grafik_restart(semua_riwayat, judul, path):
     plt.figure(figsize=(7, 3.6))
