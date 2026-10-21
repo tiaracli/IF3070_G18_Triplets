@@ -87,7 +87,7 @@ def tanya_iterasi_hc():
     return tanya_angka("Berapa maksimal iterasi?",
                        "Satu iterasi berarti satu kali pindah ke tetangga yang lebih baik. "
                        "Pencarian bisa berhenti lebih awal kalau sudah tidak ada tetangga yang lebih baik.",
-                       1, 1000, 500)
+                       1, 500, 500)
 
 
 def jalankan(problem, pilihan, objective, seed):
@@ -100,12 +100,12 @@ def jalankan(problem, pilihan, objective, seed):
             batas = tanya_angka("Berapa maksimal sideways move?",
                                 "Sideways move adalah pindah ke tetangga yang nilainya sama, "
                                 "supaya pencarian tidak langsung berhenti di dataran (shoulder).",
-                                0, 100, 20)
+                                0, 20, 20)
         if pilihan == "4":
             restart = tanya_angka("Berapa maksimal restart?",
                                   "Setiap restart mengulang pencarian dari state acak yang baru, "
                                   "lalu diambil hasil terbaik dari semua percobaan.",
-                                  0, 50, 10)
+                                  0, 10, 10)
 
         awal = random_state(problem)
         print("\nSedang berjalan...")
@@ -133,14 +133,14 @@ def jalankan(problem, pilihan, objective, seed):
     elif pilihan == "5":
         T0 = tanya_angka("Berapa suhu awal (T0)?",
                          "Makin tinggi suhu awal, makin sering langkah yang lebih buruk diterima di awal pencarian.",
-                         1.0, 1000.0, 100.0)
+                         20.0, 300.0, 100.0)
         alpha = tanya_angka("Berapa nilai alpha?",
                             "Alpha adalah pengali suhu di setiap iterasi. "
                             "Makin dekat ke 1, suhu turun makin pelan dan prosesnya makin lama.",
-                            0.9, 0.9999, 0.9998)
+                            0.5, 0.9999, 0.9998)
         tmin = tanya_angka("Berapa suhu minimum?",
                            "Pencarian berhenti ketika suhu sudah turun di bawah angka ini.",
-                           0.001, 10.0, 0.1)
+                           0.01, 5.0, 0.1)
         print("\nSedang berjalan...")
         h = simulated_annealing(problem, T0, alpha, tmin, seed=seed, objective=objective)
         hasil["durasi"] = h["duration"]
