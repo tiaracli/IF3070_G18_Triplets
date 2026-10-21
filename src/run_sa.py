@@ -8,7 +8,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from core import load_problem, render_text, value_fee
+from core import read_data, show_layout, value_fee
 from sa import simulated_annealing
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -26,9 +26,9 @@ def simpan_run(problem, hasil, nama, k, folder):
     with open(os.path.join(folder, f"{nama}_run{k}.txt"), "w") as f:
         f.write(f"=== {nama} run {k} (seed {hasil['params']['seed']}) ===\n\n")
         f.write(f"STATE AWAL (value_fee {value_fee(problem, hasil['initial_state'])})\n")
-        f.write(render_text(problem, hasil["initial_state"]) + "\n\n")
+        f.write(show_layout(problem, hasil["initial_state"]) + "\n\n")
         f.write(f"STATE AKHIR (value_fee {value_fee(problem, hasil['final_state'])})\n")
-        f.write(render_text(problem, hasil["final_state"]) + "\n")
+        f.write(show_layout(problem, hasil["final_state"]) + "\n")
 
 
 def plot_objective(hasil_list, nama, folder):
@@ -105,7 +105,7 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     semua = []
     for nama in args.kasus:
-        problem = load_problem(os.path.join(ROOT, "src", "data", nama + ".json"))
+        problem = read_data(os.path.join(ROOT, "src", "data", nama + ".json"))
         hasil_list = []
         for k, seed in enumerate(SEEDS, 1):
             h = simulated_annealing(problem, T0=args.T0, alpha=args.alpha,

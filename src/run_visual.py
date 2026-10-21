@@ -1,7 +1,7 @@
 import json
 import os
 
-from core import load_problem
+from core import read_data
 from data_io import FOLDER_OUTPUT, path_data, path_output
 from visual import gambar_kapal, grafik_objective, grafik_peluang, grafik_banding, grafik_restart
 
@@ -30,7 +30,7 @@ def baca_json(folder, nama_file):
         return json.load(f)
 
 
-def gambar_hc(problem, folder, nama_file):
+def visual_hc(problem, folder, nama_file):
     data = baca_json(folder, nama_file)
     if data is None:
         print(nama_file, "belum ada, jalankan run_hill_climbing.py dulu")
@@ -75,7 +75,7 @@ def gambar_hc(problem, folder, nama_file):
 
 
 def gambar_sa(kasus):
-    problem = load_problem(path_data(kasus))
+    problem = read_data(path_data(kasus))
     riwayat = []
     label = []
     for k in range(1, 4):
@@ -106,9 +106,9 @@ def gambar_sa(kasus):
                        path_output("sa", kasus + "_banding.png"), 1)
 
 
-problem = load_problem(path_data("kasus_1"))
-gambar_hc(problem, "hc", "detail_hc.json")
-gambar_hc(problem, "bonus_eta", "detail_eta.json")
+problem = read_data(path_data("kasus_1"))
+visual_hc(problem, "hc", "detail_hc.json")
+visual_hc(problem, "bonus_eta", "detail_eta.json")
 gambar_sa("kasus_1")
 gambar_sa("kasus_multi")
 print("selesai, gambar ada di output/hc, output/bonus_eta, output/sa")

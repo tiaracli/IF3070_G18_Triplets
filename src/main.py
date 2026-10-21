@@ -3,10 +3,10 @@ import random
 import time
 import webbrowser
 
-from core import load_problem, value_fee, eta_value, count_misplaced_urgent, render_text
+from core import read_data, value_fee, value_eta, count_salahzona, show_layout
 from neighbor import random_state, all_neighbors
-from hill_climbing import (steepest_ascent, stochastic_hill_climbing,
-                           sideways_hill_climbing, random_restart_hill_climbing)
+from hill_climbing import (steepestascent_hc, stochastic_hc,
+                           sideways_hc, randomrestart_hc)
 from sa import simulated_annealing
 from geneticalgorithm import genetic_algorithm
 from data_io import path_data, path_output
@@ -79,11 +79,11 @@ def tanya_ya_tidak(judul):
 
 def nilai(problem, state, objective):
     if objective == "eta":
-        return eta_value(problem, state)
+        return value_eta(problem, state)
     return value_fee(problem, state)
 
 
-def tanya_iterasi_hc():
+def input_iterasi():
     return tanya_angka("Berapa maksimal iterasi?",
                        "Satu iterasi berarti satu kali pindah ke tetangga yang lebih baik. "
                        "Pencarian bisa berhenti lebih awal kalau sudah tidak ada tetangga yang lebih baik.",
@@ -95,7 +95,7 @@ def jalankan(problem, pilihan, objective, seed):
     hasil = {}
 
     if pilihan in ["1", "2", "3", "4"]:
-        iterasi = tanya_iterasi_hc()
+        iterasi = input_iterasi()
         if pilihan == "3":
             batas = tanya_angka("Berapa maksimal sideways move?",
                                 "Sideways move adalah pindah ke tetangga yang nilainya sama, "
@@ -111,13 +111,13 @@ def jalankan(problem, pilihan, objective, seed):
         print("\nSedang berjalan...")
         mulai = time.time()
         if pilihan == "1":
-            h = steepest_ascent(problem, awal, all_neighbors, objective, iterasi)
+            h = steepestascent_hc(problem, awal, all_neighbors, objective, iterasi)
         elif pilihan == "2":
-            h = stochastic_hill_climbing(problem, awal, all_neighbors, objective, iterasi)
+            h = stochastic_hc(problem, awal, all_neighbors, objective, iterasi)
         elif pilihan == "3":
-            h = sideways_hill_climbing(problem, awal, all_neighbors, objective, iterasi, batas)
+            h = sideways_hc(problem, awal, all_neighbors, objective, iterasi, batas)
         else:
-            h = random_restart_hill_climbing(problem, awal, all_neighbors, random_state,
+            h = randomrestart_hc(problem, awal, all_neighbors, random_state,
                                              objective, restart, iterasi)
         hasil["durasi"] = time.time() - mulai
         hasil["awal"] = awal
@@ -239,15 +239,15 @@ def jelaskan(problem, hasil, pilihan):
 def tampilkan(problem, hasil, objective):
     print("\n---------- STATE AWAL ----------")
     print("Nilai objective = " + rapi(nilai(problem, hasil["awal"], objective)))
-    print(render_text(problem, hasil["awal"]))
+    print(show_layout(problem, hasil["awal"]))
     print("\n---------- STATE AKHIR ----------")
     print("Nilai objective = " + rapi(nilai(problem, hasil["akhir"], objective)))
-    print(render_text(problem, hasil["akhir"]))
+    print(show_layout(problem, hasil["akhir"]))
 
     print("\n---------- RINGKASAN ----------")
     print("Value fee akhir = " + str(value_fee(problem, hasil["akhir"])))
-    print("Nilai Estimated Time of Arrival (ETA) akhir = " + rapi(eta_value(problem, hasil["akhir"])))
-    print("Kendaraan mendesak di luar zona depan = " + str(count_misplaced_urgent(problem, hasil["akhir"])))
+    print("Nilai Estimated Time of Arrival (ETA) akhir = " + rapi(value_eta(problem, hasil["akhir"])))
+    print("Kendaraan mendesak di luar zona depan = " + str(count_salahzona(problem, hasil["akhir"])))
     print("Jumlah iterasi = " + str(hasil["iterasi"]))
     print("Durasi = " + str(round(hasil["durasi"], 3)) + " detik")
     if "sideways" in hasil:
@@ -295,9 +295,9 @@ while True:
         "2": "kasus_multi_kapal (terdiri dari 2 kapal dengan ukuran 8x8 dan 6x8)",
     })
     if data == "1":
-        problem = load_problem(path_data("kasus_1"))
+        problem = read_data(path_data("kasus_1"))
     else:
-        problem = load_problem(path_data("kasus_multi"))
+        problem = read_data(path_data("kasus_multi"))
 
     pilihan = tanya_pilihan("Algoritma mana yang mau dijalankan?", ALGORITMA)
 

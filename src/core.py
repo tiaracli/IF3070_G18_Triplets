@@ -6,12 +6,12 @@ ETA_URGENT = 3
 ETA_PENALTY = 0.5
 
 
-def load_problem(path):
+def read_data(path):
     with open(path, "r") as f:
         return json.load(f)
 
 
-def get_vehicle_size(vehicle, orientation):
+def ukuran_vehicle(vehicle, orientation):
     w = vehicle["w"]
     l = vehicle["l"]
     if orientation == "H":
@@ -21,9 +21,9 @@ def get_vehicle_size(vehicle, orientation):
     return None
 
 
-def get_vehicle_cells(vehicle, placement):
+def posisi_vehicle(vehicle, placement):
     ship_idx, x, y, orientation = placement
-    size = get_vehicle_size(vehicle, orientation)
+    size = ukuran_vehicle(vehicle, orientation)
     if size is None:
         return None
 
@@ -35,7 +35,7 @@ def get_vehicle_cells(vehicle, placement):
     return cells
 
 
-def check_placement(problem, state):
+def cek_placement(problem, state):
     ships = problem["ships"]
     vehicles = problem["vehicles"]
 
@@ -79,7 +79,7 @@ def check_placement(problem, state):
             return False
 
         ship = ships[ship_idx]
-        cells = get_vehicle_cells(vehicle, placement)
+        cells = posisi_vehicle(vehicle, placement)
         if cells is None:
             return False
 
@@ -108,9 +108,9 @@ def value_fee(problem, state):
     return total_fee
 
 
-def is_near_ramp(problem, vehicle, placement):
+def dekat_ramp(problem, vehicle, placement):
     ship_idx, x, y, orientation = placement
-    size = get_vehicle_size(vehicle, orientation)
+    size = ukuran_vehicle(vehicle, orientation)
     if size is None or ship_idx < 0 or ship_idx >= len(problem["ships"]):
         return False
 
@@ -120,7 +120,7 @@ def is_near_ramp(problem, vehicle, placement):
     return y + l <= front_limit
 
 
-def eta_value(problem, state):
+def value_eta(problem, state):
     vehicles = problem["vehicles"]
     total_score = 0
     for i in range(len(vehicles)):
@@ -130,13 +130,13 @@ def eta_value(problem, state):
 
         vehicle = vehicles[i]
         fee = vehicle["fee"]
-        if vehicle["eta"] <= ETA_URGENT and not is_near_ramp(problem, vehicle, placement):
+        if vehicle["eta"] <= ETA_URGENT and not dekat_ramp(problem, vehicle, placement):
             fee = fee * (1 - ETA_PENALTY)
         total_score += fee
     return total_score
 
 
-def count_misplaced_urgent(problem, state):
+def count_salahzona(problem, state):
     vehicles = problem["vehicles"]
     count = 0
     for i in range(len(vehicles)):
@@ -145,13 +145,13 @@ def count_misplaced_urgent(problem, state):
             continue
 
         vehicle = vehicles[i]
-        if vehicle["eta"] <= ETA_URGENT and not is_near_ramp(problem, vehicle, placement):
+        if vehicle["eta"] <= ETA_URGENT and not dekat_ramp(problem, vehicle, placement):
             count += 1
     return count
 
 
-def render_text(problem, state):
-    if not check_placement(problem, state):
+def show_layout(problem, state):
+    if not cek_placement(problem, state):
         return "State tidak valid"
 
     simbol = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -166,7 +166,7 @@ def render_text(problem, state):
             if placement[0] != s:
                 continue
             muatan += vehicle["weight"]
-            for x, y in get_vehicle_cells(vehicle, placement):
+            for x, y in posisi_vehicle(vehicle, placement):
                 grid[x][y] = simbol[idx % len(simbol)]
 
         out.append(f'{ship["id"]} (muatan {muatan}/{ship["capacity"]})')

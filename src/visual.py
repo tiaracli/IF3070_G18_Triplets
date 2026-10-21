@@ -3,7 +3,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-from core import get_vehicle_cells, value_fee, eta_value
+from core import posisi_vehicle, value_fee, value_eta
 
 UNGU = "#5D1C6A"
 PINK = "#CA5995"
@@ -56,7 +56,7 @@ def gambar_kapal(problem, state, judul, path):
         if state[i][0] != -1:
             jumlah += 1
 
-    nilai_eta = eta_value(problem, state)
+    nilai_eta = value_eta(problem, state)
     if nilai_eta == int(nilai_eta):
         nilai_eta = int(nilai_eta)
 
@@ -87,7 +87,7 @@ def gambar_kapal(problem, state, judul, path):
         for i in range(len(kendaraan)):
             if state[i][0] != k:
                 continue
-            for sel in get_vehicle_cells(kendaraan[i], state[i]):
+            for sel in posisi_vehicle(kendaraan[i], state[i]):
                 isi[sel] = kendaraan[i]["id"]
 
         for x in range(W):

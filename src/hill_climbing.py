@@ -1,25 +1,25 @@
 
 import random
 
-from core import check_placement, value_fee, eta_value
+from core import cek_placement, value_fee, value_eta
 
 
-def get_score(problem, state, objective):
+def nilai_state(problem, state, objective):
     if objective == "eta":
-        return eta_value(problem, state)
+        return value_eta(problem, state)
     elif objective == "fee":
         return value_fee(problem, state)
     raise ValueError("Objective harus 'fee' atau 'eta'")
 
 
-def steepest_ascent(problem, initial_state, get_neighbors,
+def steepestascent_hc(problem, initial_state, get_neighbors,
                    objective="fee", max_iterations=500):
 
-    if not check_placement(problem, initial_state):
+    if not cek_placement(problem, initial_state):
         raise ValueError("Initial state tidak valid")
 
     current_state = initial_state
-    current_score = get_score(problem, current_state, objective)
+    current_score = nilai_state(problem, current_state, objective)
 
     history = [current_score]
     iterations = 0
@@ -29,10 +29,10 @@ def steepest_ascent(problem, initial_state, get_neighbors,
         best_score = current_score
 
         for neighbor in get_neighbors(problem, current_state):
-            if not check_placement(problem, neighbor):
+            if not cek_placement(problem, neighbor):
                 continue
 
-            neighbor_score = get_score(problem, neighbor, objective)
+            neighbor_score = nilai_state(problem, neighbor, objective)
 
             if neighbor_score > best_score:
                 best_state = neighbor
@@ -55,14 +55,14 @@ def steepest_ascent(problem, initial_state, get_neighbors,
     }
 
 
-def stochastic_hill_climbing(problem, initial_state, get_neighbors,
+def stochastic_hc(problem, initial_state, get_neighbors,
                              objective="fee", max_iterations=500):
 
-    if not check_placement(problem, initial_state):
+    if not cek_placement(problem, initial_state):
         raise ValueError("Initial state tidak valid")
 
     current_state = initial_state
-    current_score = get_score(problem, current_state, objective)
+    current_score = nilai_state(problem, current_state, objective)
 
     history = [current_score]
     iterations = 0
@@ -71,10 +71,10 @@ def stochastic_hill_climbing(problem, initial_state, get_neighbors,
         better_neighbors = []
 
         for neighbor in get_neighbors(problem, current_state):
-            if not check_placement(problem, neighbor):
+            if not cek_placement(problem, neighbor):
                 continue
 
-            neighbor_score = get_score(problem, neighbor, objective)
+            neighbor_score = nilai_state(problem, neighbor, objective)
 
             if neighbor_score > current_score:
                 better_neighbors.append((neighbor, neighbor_score))
@@ -98,15 +98,15 @@ def stochastic_hill_climbing(problem, initial_state, get_neighbors,
     }
 
 
-def sideways_hill_climbing(problem, initial_state, get_neighbors,
+def sideways_hc(problem, initial_state, get_neighbors,
                            objective="fee", max_iterations=500,
                            max_sideways=20):
 
-    if not check_placement(problem, initial_state):
+    if not cek_placement(problem, initial_state):
         raise ValueError("Initial state tidak valid")
 
     current_state = initial_state
-    current_score = get_score(problem, current_state, objective)
+    current_score = nilai_state(problem, current_state, objective)
 
     history = [current_score]
     iterations = 0
@@ -121,10 +121,10 @@ def sideways_hill_climbing(problem, initial_state, get_neighbors,
         equal_neighbors = []
 
         for neighbor in get_neighbors(problem, current_state):
-            if not check_placement(problem, neighbor):
+            if not cek_placement(problem, neighbor):
                 continue
 
-            neighbor_score = get_score(problem, neighbor, objective)
+            neighbor_score = nilai_state(problem, neighbor, objective)
 
             if neighbor_score > best_score:
                 best_state = neighbor
@@ -162,11 +162,11 @@ def sideways_hill_climbing(problem, initial_state, get_neighbors,
     }
 
 
-def random_restart_hill_climbing(problem, initial_state, get_neighbors,
+def randomrestart_hc(problem, initial_state, get_neighbors,
                                  random_state, objective="fee",
                                  max_restarts=10, max_iterations=500):
 
-    if not check_placement(problem, initial_state):
+    if not cek_placement(problem, initial_state):
         raise ValueError("Initial state tidak valid")
 
     best_result = None
@@ -182,7 +182,7 @@ def random_restart_hill_climbing(problem, initial_state, get_neighbors,
         else:
             start_state = random_state(problem)
 
-        result = steepest_ascent(
+        result = steepestascent_hc(
             problem,
             start_state,
             get_neighbors,

@@ -1,12 +1,12 @@
 import random
 
-from core import OUT, check_placement, value_fee, eta_value
+from core import OUT, cek_placement, value_fee, value_eta
 from neighbor import random_state, random_neighbor
 
 
 def hitung_nilai(problem, state, objective):
     if objective == "eta":
-        return eta_value(problem, state)
+        return value_eta(problem, state)
     return value_fee(problem, state)
 
 
@@ -28,7 +28,7 @@ def perbaiki(problem, anak, cadangan):
             if posisi == OUT:
                 continue
             hasil[i] = posisi
-            if check_placement(problem, tuple(hasil)):
+            if cek_placement(problem, tuple(hasil)):
                 break
             hasil[i] = OUT
     return tuple(hasil)
@@ -62,9 +62,9 @@ def genetic_algorithm(problem, objective="fee", jumlah_populasi=50, iterasi=200)
                 anak1, anak2 = crossover(a, b)
             else:
                 anak1, anak2 = a, b
-            if not check_placement(problem, anak1):
+            if not cek_placement(problem, anak1):
                 anak1 = perbaiki(problem, anak1, b)
-            if not check_placement(problem, anak2):
+            if not cek_placement(problem, anak2):
                 anak2 = perbaiki(problem, anak2, a)
 
             for anak in [anak1, anak2]:

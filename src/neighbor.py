@@ -1,6 +1,6 @@
 import random
 
-from core import OUT, get_vehicle_size, check_placement
+from core import OUT, ukuran_vehicle, cek_placement
 
 P_KELUAR = 0.15
 
@@ -27,7 +27,7 @@ def apply_move(state, move):
 def random_placement(problem, vehicle, orient):
     ships = problem["ships"]
     s = random.randrange(len(ships))
-    h, wd = get_vehicle_size(vehicle, orient)
+    h, wd = ukuran_vehicle(vehicle, orient)
     if h > ships[s]["w"] or wd > ships[s]["l"]:
         return None
     r = random.randint(0, ships[s]["w"] - h)
@@ -49,7 +49,7 @@ def random_state(problem, p_masuk=0.6, max_coba=30):
                 continue
             coba = state.copy()
             coba[i] = p
-            if check_placement(problem, tuple(coba)):
+            if cek_placement(problem, tuple(coba)):
                 state[i] = p
                 break
     return tuple(state)
@@ -93,7 +93,7 @@ def random_neighbor(problem, state, max_coba=100):
         if move is None:
             continue
         nxt = apply_move(state, move)
-        if check_placement(problem, nxt):
+        if cek_placement(problem, nxt):
             return nxt
     return None
 
@@ -128,7 +128,7 @@ def all_neighbors(problem, state):
         # move ke semua posisi
         daftar_orient = [state[i][3]] if di_dalam else ["H", "V"]
         for o in daftar_orient:
-            h, wd = get_vehicle_size(v, o)
+            h, wd = ukuran_vehicle(v, o)
             for s, ship in enumerate(ships):
                 for r in range(ship["w"] - h + 1):
                     for c in range(ship["l"] - wd + 1):
@@ -136,4 +136,4 @@ def all_neighbors(problem, state):
                         if p != state[i]:
                             kandidat.append(apply_move(state, ("move", i, p)))
 
-    return [k for k in kandidat if check_placement(problem, k)]
+    return [k for k in kandidat if cek_placement(problem, k)]

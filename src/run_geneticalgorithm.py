@@ -1,13 +1,13 @@
 import random
 import time
 
-from core import load_problem, value_fee, count_misplaced_urgent
+from core import read_data, value_fee, count_salahzona
 from geneticalgorithm import genetic_algorithm, hitung_nilai
 from data_io import path_data, path_output, simpan_csv
 from visual import gambar_kapal, grafik_ga
 
-kasus_1 = load_problem(path_data("kasus_1"))
-kasus_multi = load_problem(path_data("kasus_multi"))
+kasus_1 = read_data(path_data("kasus_1"))
+kasus_multi = read_data(path_data("kasus_multi"))
 
 percobaan = [
     ("A", 50, 100),
@@ -42,7 +42,7 @@ for kode, populasi, iterasi in percobaan:
             "run": run,
             "nilai_awal": value_fee(kasus_1, awal),
             "nilai_akhir": value_fee(kasus_1, akhir),
-            "salah_zona": count_misplaced_urgent(kasus_1, akhir),
+            "salah_zona": count_salahzona(kasus_1, akhir),
             "durasi_detik": round(durasi, 3),
         })
         print(nama, "awal =", value_fee(kasus_1, awal), "akhir =", value_fee(kasus_1, akhir))
@@ -70,7 +70,7 @@ for nama_bonus, problem, objective, keterangan in [("bonus_eta", kasus_1, "eta",
             "nilai_awal": hitung_nilai(problem, awal, objective),
             "nilai_akhir": hitung_nilai(problem, akhir, objective),
             "fee_akhir": value_fee(problem, akhir),
-            "salah_zona": count_misplaced_urgent(problem, akhir),
+            "salah_zona": count_salahzona(problem, akhir),
             "durasi_detik": round(durasi, 3),
         })
         print(nama, "akhir =", hitung_nilai(problem, akhir, objective))

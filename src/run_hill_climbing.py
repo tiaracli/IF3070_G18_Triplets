@@ -6,20 +6,20 @@ import time
 from pathlib import Path
 
 from core import (
-    load_problem,
-    check_placement,
+    read_data,
+    cek_placement,
     value_fee,
-    eta_value,
-    count_misplaced_urgent
+    value_eta,
+    count_salahzona
 )
 
 from neighbor import random_state, all_neighbors
 
 from hill_climbing import (
-    steepest_ascent,
-    stochastic_hill_climbing,
-    sideways_hill_climbing,
-    random_restart_hill_climbing
+    steepestascent_hc,
+    stochastic_hc,
+    sideways_hc,
+    randomrestart_hc
 )
 
 
@@ -52,9 +52,9 @@ def save_json(path, data):
         json.dump(data, f, indent=4)
 
 
-def run_algorithm(problem, name, initial_state, objective):
+def algoritma_hc(problem, name, initial_state, objective):
     if name == "steepest":
-        return steepest_ascent(
+        return steepestascent_hc(
             problem,
             initial_state,
             all_neighbors,
@@ -63,7 +63,7 @@ def run_algorithm(problem, name, initial_state, objective):
         )
 
     elif name == "stochastic":
-        return stochastic_hill_climbing(
+        return stochastic_hc(
             problem,
             initial_state,
             all_neighbors,
@@ -72,7 +72,7 @@ def run_algorithm(problem, name, initial_state, objective):
         )
 
     elif name == "sideways":
-        return sideways_hill_climbing(
+        return sideways_hc(
             problem,
             initial_state,
             all_neighbors,
@@ -82,7 +82,7 @@ def run_algorithm(problem, name, initial_state, objective):
         )
 
     elif name == "random_restart":
-        return random_restart_hill_climbing(
+        return randomrestart_hc(
             problem,
             initial_state,
             all_neighbors,
@@ -95,7 +95,7 @@ def run_algorithm(problem, name, initial_state, objective):
     raise ValueError("Nama algoritma tidak dikenal")
 
 
-def run_experiments(problem, objective):
+def eksperimen_hc(problem, objective):
     algorithms = [
         "steepest",
         "stochastic",
@@ -110,11 +110,11 @@ def run_experiments(problem, objective):
         random.seed(seed)
         initial_state = random_state(problem)
 
-        if not check_placement(problem, initial_state):
+        if not cek_placement(problem, initial_state):
             raise ValueError("Initial state tidak valid")
 
         if objective == "eta":
-            initial_score = eta_value(problem, initial_state)
+            initial_score = value_eta(problem, initial_state)
         else:
             initial_score = value_fee(problem, initial_state)
 
@@ -123,7 +123,7 @@ def run_experiments(problem, objective):
 
             start = time.perf_counter()
 
-            result = run_algorithm(
+            result = algoritma_hc(
                 problem,
                 name,
                 initial_state,
@@ -142,8 +142,8 @@ def run_experiments(problem, objective):
                 "iterations": result["iterations"],
                 "duration_seconds": round(duration, 4),
                 "total_fee": value_fee(problem, final_state),
-                "eta_score": eta_value(problem, final_state),
-                "misplaced_urgent": count_misplaced_urgent(
+                "eta_score": value_eta(problem, final_state),
+                "misplaced_urgent": count_salahzona(
                     problem, final_state
                 ),
                 "vehicles_loaded": sum(
@@ -185,12 +185,12 @@ def main():
             f"File dataset tidak ditemukan: {DATA_PATH}"
         )
 
-    problem = load_problem(DATA_PATH)
+    problem = read_data(DATA_PATH)
 
     for objective in ("fee", "eta"):
         print(f"\nMenjalankan eksperimen HC: {objective}")
 
-        summary, details = run_experiments(
+        summary, details = eksperimen_hc(
             problem,
             objective
         )
