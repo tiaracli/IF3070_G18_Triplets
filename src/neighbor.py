@@ -9,10 +9,6 @@ def sama_jenis(a, b):
     return all(a[k] == b[k] for k in ("w", "l", "weight", "fee", "eta"))
 
 
-def persegi(v):
-    return v["w"] == v["l"]
-
-
 def apply_move(state, move):
     s = list(state)
     if move[0] == "swap":
@@ -74,7 +70,7 @@ def random_move(problem, state):
 
     i = random.randrange(n)
     if jenis == "rotate":
-        if state[i][0] == -1 or persegi(vehicles[i]):
+        if state[i][0] == -1:
             return None
         return ("rotate", i)
 
@@ -122,14 +118,14 @@ def all_neighbors(problem, state):
         di_dalam = state[i][0] != -1
 
         # rotate
-        if di_dalam and not persegi(v):
+        if di_dalam:
             kandidat.append(apply_move(state, ("rotate", i)))
 
         # move keluar kapal
         if di_dalam:
             kandidat.append(apply_move(state, ("move", i, OUT)))
 
-        # move ke semua posisi di semua kapal
+        # move ke semua posisi
         daftar_orient = [state[i][3]] if di_dalam else ["H", "V"]
         for o in daftar_orient:
             h, wd = get_vehicle_size(v, o)
