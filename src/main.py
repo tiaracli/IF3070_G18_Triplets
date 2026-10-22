@@ -285,7 +285,7 @@ while True:
     pilihan = pilih_case("Algoritma mana yang mau dijalankan?", ALGORITMA)
     jenis = pilih_case("Objective function mana yang mau dipakai?", {
         "1": "Fee, total ShippingFee kendaraan yang diangkut",
-        "2": "Estimated Time of Arrival (ETA), fee dengan potongan untuk kendaraan mendesak yang jauh dari pintu masuk",
+        "2": "Estimated Time of Arrival (ETA), total fee yang dikurangi jika kendaraan yang harus cepat diturunkan diletakkan jauh dari pintu masuk (bonus)",
     })
     objective = "fee"
     if jenis == "2":
