@@ -245,11 +245,11 @@ def tampilkan_hasil(problem, hasil, objective):
         print("Frekuensi stuck = " + str(round(hasil["stuck"], 3)))
 
 
-def save_gambar(problem, hasil, judul):
-    awal = lokasi_output("demo", "awal.png")
-    akhir = lokasi_output("demo", "akhir.png")
-    grafik = lokasi_output("demo", "grafik.png")
-    peluang = lokasi_output("demo", "peluang.png")
+def save_gambar(problem, hasil, judul, folder, nama):
+    awal = lokasi_output(folder, nama + "_awal.png")
+    akhir = lokasi_output(folder, nama + "_akhir.png")
+    grafik = lokasi_output(folder, nama + "_grafik.png")
+    peluang = lokasi_output(folder, nama + "_peluang.png")
     visual_kapal(problem, hasil["awal"], judul + " (awal)", awal)
     visual_kapal(problem, hasil["akhir"], judul + " (akhir)", akhir)
     if "rata" in hasil:
@@ -262,8 +262,6 @@ def save_gambar(problem, hasil, judul):
     if "peluang" in hasil:
         grafik_prob(hasil["peluang"], judul, peluang)
         dibuka.append(peluang)
-    elif os.path.exists(peluang):
-        os.remove(peluang)
     return dibuka
 
 print("-----------------------------------------------")
@@ -285,7 +283,7 @@ while True:
     pilihan = pilih_case("Algoritma mana yang mau dijalankan?", ALGORITMA)
     jenis = pilih_case("Objective function mana yang mau dipakai?", {
         "1": "Fee, total ShippingFee kendaraan yang diangkut",
-        "2": "Estimated Time of Arrival (ETA), fee dengan potongan untuk kendaraan mendesak yang jauh dari pintu masuk",
+        "2": "Estimated Time of Arrival (ETA), total fee yang dikurangi jika kendaraan yang harus cepat diturunkan diletakkan jauh dari pintu masuk (bonus)",
     })
     objective = "fee"
     if jenis == "2":
@@ -301,8 +299,17 @@ while True:
     judul = ALGORITMA[pilihan] + ", seed " + str(seed)
     if objective == "eta":
         judul += ", objective Estimated Time of Arrival (ETA)"
-    dibuka = save_gambar(problem, hasil, judul)
-    print("\nGambar state awal, state akhir, dan grafik sudah disimpan di folder output/demo")
+    nama_kasus = "kasus_1" if data == "1" else "kasus_multi"
+    nama_algoritma = ALGORITMA[pilihan].lower().replace(" ", "_")
+    nama = nama_kasus + "_" + nama_algoritma + "_" + objective + "_seed" + str(seed)
+    if pilihan in ["1", "2", "3", "4"]:
+        folder = "hc"
+    elif pilihan == "5":
+        folder = "sa"
+    else:
+        folder = "ga"
+    dibuka = save_gambar(problem, hasil, judul, folder, nama)
+    print("\nGambar sudah disimpan di folder output/" + folder + " dengan nama " + nama)
     if pilih_output("Tampilkan visualisasi untuk state final?"):
         for path in dibuka:
             webbrowser.open("file://" + os.path.abspath(path))
