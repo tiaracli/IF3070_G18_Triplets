@@ -245,11 +245,11 @@ def tampilkan_hasil(problem, hasil, objective):
         print("Frekuensi stuck = " + str(round(hasil["stuck"], 3)))
 
 
-def save_gambar(problem, hasil, judul, nama):
-    awal = lokasi_output("demo", nama + "_awal.png")
-    akhir = lokasi_output("demo", nama + "_akhir.png")
-    grafik = lokasi_output("demo", nama + "_grafik.png")
-    peluang = lokasi_output("demo", nama + "_peluang.png")
+def save_gambar(problem, hasil, judul, folder, nama):
+    awal = lokasi_output(folder, nama + "_awal.png")
+    akhir = lokasi_output(folder, nama + "_akhir.png")
+    grafik = lokasi_output(folder, nama + "_grafik.png")
+    peluang = lokasi_output(folder, nama + "_peluang.png")
     visual_kapal(problem, hasil["awal"], judul + " (awal)", awal)
     visual_kapal(problem, hasil["akhir"], judul + " (akhir)", akhir)
     if "rata" in hasil:
@@ -302,8 +302,14 @@ while True:
     nama_kasus = "kasus_1" if data == "1" else "kasus_multi"
     nama_algoritma = ALGORITMA[pilihan].lower().replace(" ", "_")
     nama = nama_kasus + "_" + nama_algoritma + "_" + objective + "_seed" + str(seed)
-    dibuka = save_gambar(problem, hasil, judul, nama)
-    print("\nGambar sudah disimpan di folder output/demo dengan nama " + nama)
+    if pilihan in ["1", "2", "3", "4"]:
+        folder = "hc"
+    elif pilihan == "5":
+        folder = "sa"
+    else:
+        folder = "ga"
+    dibuka = save_gambar(problem, hasil, judul, folder, nama)
+    print("\nGambar sudah disimpan di folder output/" + folder + " dengan nama " + nama)
     if pilih_output("Tampilkan visualisasi untuk state final?"):
         for path in dibuka:
             webbrowser.open("file://" + os.path.abspath(path))
