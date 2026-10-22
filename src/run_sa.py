@@ -4,10 +4,6 @@ import json
 import os
 import statistics
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-
 from core import read_data, show_layout, value_fee
 from sa import simulated_annealing
 
