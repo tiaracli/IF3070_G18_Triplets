@@ -1,113 +1,131 @@
 # IF3070_G18_Triplets
 
 Tugas Besar 1 IF3070 Dasar Inteligensi Artifisial 2026/2027
+
 Kelompok 18 Triplets, Institut Teknologi Bandung
 
-Repository ini berisi program untuk menata kendaraan di geladak kapal kargo memakai algoritma local search. Program memilih kendaraan mana yang diangkut, lalu menentukan posisi dan orientasinya, supaya total ShippingFee setinggi mungkin tanpa melanggar batasan kapal.
+Repository ini berisi implementasi enam algoritma local search, yaitu Steepest Ascent Hill-Climbing, Stochastic Hill-Climbing, Hill-Climbing with Sideways Move, Random Restart Hill-Climbing, Simulated Annealing, dan Genetic Algorithm. Keenam algoritma digunakan untuk menata kendaraan di geladak kapal kargo pada kasus satu kapal maupun multi-kapal, dengan objective function ShippingFee atau ETA.
+
+![Kapal kargo pengangkut kendaraan](docs/img/kapal.png)
+
+*Sumber: Spesifikasi Tugas Besar 1 IF3070*
 
 ## Deskripsi Tugas Besar
 
-Setiap kendaraan punya ukuran, berat, ShippingFee, dan ETA yang berbeda. Kapal punya geladak berbentuk grid dengan luas dan kapasitas berat yang terbatas, jadi tidak semua kendaraan bisa ikut. Susunan kendaraan dianggap valid kalau kendaraan tidak saling bertumpuk, semua bagiannya ada di dalam geladak, dan total beratnya tidak melebihi kapasitas kapal.
+Penataan kendaraan di geladak kapal kargo perlu memperhatikan luas geladak dan kapasitas berat kapal. Setiap kendaraan memiliki ukuran, berat, ShippingFee, dan ETA yang berbeda, sehingga tidak semua kendaraan dapat diangkut. Program ini menentukan kendaraan mana yang dimuat beserta posisi dan orientasinya agar total ShippingFee setinggi mungkin.
 
-Pencarian solusi memakai tiga algoritma, yaitu Hill-Climbing, Simulated Annealing, dan Genetic Algorithm. Selain bagian wajib, kami juga mengerjakan tiga bonus, yaitu keempat varian Hill-Climbing, objective function tambahan berbasis ETA, dan penataan untuk lebih dari satu kapal.
+Geladak kapal dan kendaraan direpresentasikan sebagai grid dua dimensi. Suatu susunan dianggap valid apabila kendaraan tidak saling bertumpuk, seluruh bagian kendaraan berada di dalam geladak, dan total berat kendaraan tidak melebihi kapasitas kapal. Pencarian dimulai dari state acak, lalu susunan baru dibentuk dengan menukar dua kendaraan, memindahkan kendaraan, atau mengubah orientasi kendaraan.
 
-## Persiapan Demo Tugas Besar
+![Representasi grid kapal dan kendaraan](docs/img/grid.png)
 
-Program ditulis dengan Python 3 dan sudah dicoba di Python 3.13. Library tambahan yang dipakai hanya matplotlib untuk membuat gambar kapal dan grafik.
+*Sumber: Spesifikasi Tugas Besar 1 IF3070*
 
-Clone repository lalu masuk ke foldernya.
+## Persiapan dan Program Demo
 
-```bash
-git clone https://github.com/tiaracli/IF3070_G18_Triplets.git
-cd IF3070_G18_Triplets
-```
+Program ditulis dengan Python 3 dan sudah diuji pada Python 3.13. Library tambahan yang digunakan hanya matplotlib untuk membuat gambar kapal dan grafik. Pada Windows, ganti `python3` dengan `python` di semua perintah.
 
-Install library yang dibutuhkan.
+1. Clone repository lalu masuk ke folder repository.
 
-```bash
-python3 -m pip install -r requirements.txt
-```
+    ```bash
+    git clone https://github.com/tiaracli/IF3070_G18_Triplets.git
+    cd IF3070_G18_Triplets
+    ```
 
-Kalau memakai Windows, ganti `python3` dengan `python` di semua perintah.
+2. Install library yang dibutuhkan.
 
-## Menjalankan Program Demo
+    ```bash
+    python3 -m pip install -r requirements.txt
+    ```
 
-```bash
-python3 src/main.py
-```
+3. Jalankan program demo.
 
-Program akan menampilkan menu di terminal. Pengguna memilih kasus, algoritma, objective function, seed, lalu parameter algoritmanya. Setiap pertanyaan menampilkan batas angka yang boleh diisi, dan kalau langsung menekan Enter, program memakai nilai bawaan.
+    ```bash
+    python3 src/main.py
+    ```
 
-Pilihan algoritma di menu adalah sebagai berikut.
+4. Pilih kasus, yaitu kasus satu kapal atau kasus multi-kapal.
 
-| Nomor | Algoritma |
-| --- | --- |
-| 1 | Steepest Ascent Hill Climbing |
-| 2 | Stochastic Hill Climbing |
-| 3 | Sideways Move Hill Climbing |
-| 4 | Random Restart Hill Climbing |
-| 5 | Simulated Annealing |
-| 6 | Genetic Algorithm |
+5. Pilih algoritma yang ingin dijalankan.
 
-Setelah selesai, program menampilkan state awal dan state akhir dalam bentuk grid teks, lengkap dengan daftar kendaraan yang tidak terangkut. Di bawahnya ada ringkasan berisi nilai ShippingFee, nilai ETA, jumlah kendaraan mendesak yang jauh dari pintu masuk, jumlah iterasi, dan durasi. Gambar state awal, state akhir, dan grafik disimpan otomatis ke folder `output/hc`, `output/sa`, atau `output/ga` sesuai algoritma yang dipilih. Nama filenya memuat kasus, algoritma, objective, dan seed, jadi hasil run sebelumnya tidak tertimpa.
+    | Nomor | Algoritma |
+    | --- | --- |
+    | 1 | Steepest Ascent Hill Climbing |
+    | 2 | Stochastic Hill Climbing |
+    | 3 | Sideways Move Hill Climbing |
+    | 4 | Random Restart Hill Climbing |
+    | 5 | Simulated Annealing |
+    | 6 | Genetic Algorithm |
+
+6. Pilih objective function, yaitu ShippingFee atau ETA.
+
+7. Isi seed dan parameter algoritma. Setiap pertanyaan menampilkan batas angka yang boleh diisi, dan jika langsung menekan Enter, program menggunakan nilai bawaan.
+
+8. Lihat hasilnya di terminal. Program menampilkan state awal dan akhir dalam bentuk grid, daftar kendaraan yang tidak terangkut, nilai ShippingFee, nilai ETA, jumlah iterasi, dan durasi pencarian.
+
+9. Buka visualisasi jika diperlukan. Gambar state awal, state akhir, dan grafik disimpan otomatis ke folder `output/hc`, `output/sa`, atau `output/ga` sesuai algoritma yang dipilih.
 
 ## Menjalankan Eksperimen
 
-Setiap algoritma punya skrip eksperimen sendiri yang menjalankan semua percobaan dengan seed tetap.
+Setiap algoritma memiliki file Python tersendiri untuk menjalankan seluruh percobaan dengan seed yang tetap.
 
-| Skrip | Isi | Folder hasil |
+| File Python | Isi | Folder hasil |
 | --- | --- | --- |
-| `python3 src/run_hill_climbing.py` | Keempat varian Hill-Climbing dengan objective ShippingFee dan ETA | `output/hc` dan `output/bonus_eta` |
-| `python3 src/run_sa.py` | Simulated Annealing pada kasus satu kapal dan multi-kapal | `output/sa` |
-| `python3 src/run_geneticalgorithm.py` | Genetic Algorithm dengan variasi iterasi dan populasi, ditambah eksperimen bonus | `output/ga` |
-| `python3 src/run_visual.py` | Membuat gambar dan grafik Hill-Climbing serta Simulated Annealing dari hasil eksperimen | `output/hc`, `output/bonus_eta`, dan `output/sa` |
+| `src/run_hill_climbing.py` | Keempat varian Hill-Climbing dengan objective ShippingFee dan ETA | `output/hc` dan `output/bonus_eta` |
+| `src/run_sa.py` | Simulated Annealing pada kasus satu kapal dan multi-kapal | `output/sa` |
+| `src/run_geneticalgorithm.py` | Genetic Algorithm dengan variasi iterasi dan populasi, ditambah eksperimen bonus | `output/ga` |
+| `src/run_visual.py` | Gambar dan grafik Hill-Climbing serta Simulated Annealing dari hasil eksperimen | `output/hc`, `output/bonus_eta`, dan `output/sa` |
 
-Skrip `run_visual.py` membaca file JSON hasil eksperimen, jadi jalankan `run_hill_climbing.py` dan `run_sa.py` lebih dulu. Karena seed-nya tetap, angka yang keluar akan selalu sama. Hanya durasinya yang bisa sedikit berbeda tergantung laptop.
+Contoh menjalankannya adalah `python3 src/run_sa.py`. File `run_visual.py` membaca hasil eksperimen dalam bentuk JSON, sehingga `run_hill_climbing.py` dan `run_sa.py` perlu dijalankan terlebih dahulu. Karena seed-nya tetap, nilai yang dihasilkan akan selalu sama, sedangkan durasinya dapat sedikit berbeda tergantung perangkat.
 
 ## Dataset
 
-Dataset dibuat dengan `src/data/make_data.py` dan disimpan dalam format JSON di folder `src/data`.
+Dataset dibuat menggunakan `src/data/make_data.py` dan disimpan dalam format JSON di folder `src/data`.
 
-| File | Kapal | Kendaraan | Kegunaan |
+| File | Kapal | Jumlah kendaraan tersedia | Kegunaan |
 | --- | --- | --- | --- |
-| `kasus_1.json` | 1 kapal 8 × 8, kapasitas 22 | 13 kendaraan | Pengujian utama |
-| `kasus_multi.json` | 2 kapal, 8 × 8 kapasitas 22 dan 6 × 8 kapasitas 16 | 20 kendaraan | Pengujian bonus multi-kapal |
+| `kasus_1.json` | 1 kapal 8 × 8, kapasitas 22 | 13 | Pengujian utama |
+| `kasus_multi.json` | 2 kapal, 8 × 8 kapasitas 22 dan 6 × 8 kapasitas 16 | 20 | Pengujian bonus multi-kapal |
 
-Kendaraan terdiri dari empat jenis, yaitu motor, sedan, SUV, dan truk. Setiap kendaraan menyimpan id, lebar, panjang, berat, ShippingFee, dan ETA.
+Jumlah kendaraan pada tabel merupakan seluruh kendaraan yang tersedia untuk dipilih, bukan jumlah kendaraan yang pasti terangkut, karena total berat dan luasnya melebihi kapasitas kapal. Kendaraan terdiri atas empat jenis, yaitu motor, sedan, SUV, dan truk, dengan atribut id, lebar, panjang, berat, ShippingFee, dan ETA.
 
 ## Representasi State
 
-State disimpan sebagai tuple yang berisi posisi setiap kendaraan dengan bentuk `(ship_idx, x, y, orientation)`. Isinya nomor kapal, koordinat pojok kendaraan di grid, dan orientasi `H` atau `V`. Kendaraan yang tidak diangkut ditulis sebagai `(-1, 0, 0, "H")`. Karena nomor kapal ikut disimpan, bentuk state yang sama langsung bisa dipakai untuk kasus multi-kapal.
-
-Setiap state baru selalu diperiksa oleh fungsi `cek_placement` di `src/core.py`, jadi semua state yang diproses pasti valid.
+- State disimpan dalam bentuk tuple yang panjangnya sama dengan jumlah kendaraan, dengan satu isi untuk setiap kendaraan.
+- Setiap isi tuple berbentuk `(ship_idx, x, y, orientation)`, yaitu nomor kapal dan koordinat pojok kendaraan pada grid.
+- Orientasi `H` berarti kendaraan diletakkan sesuai ukuran aslinya, sedangkan `V` berarti kendaraan diputar.
+- Kendaraan yang tidak diangkut ditulis sebagai `(-1, 0, 0, "H")`, sehingga tetap tercatat walaupun berada di luar kapal.
+- Nomor kapal ikut disimpan di setiap kendaraan, sehingga bentuk state yang sama dapat langsung digunakan untuk kasus multi-kapal.
+- Setiap state baru diperiksa oleh fungsi `cek_placement`, sehingga semua state yang diproses sudah pasti valid.
 
 ## Objective Function
 
-Objective utama adalah total ShippingFee dari kendaraan yang diangkut. Objective kedua adalah objective bonus berbasis ETA. Kendaraan dengan ETA paling lama 3 hari dianggap mendesak dan sebaiknya diletakkan di setengah geladak yang dekat dengan pintu masuk. Kalau kendaraan mendesak diletakkan di luar zona itu, ShippingFee-nya hanya dihitung setengah. Potongan ini cuma dipakai untuk menilai susunan, bukan mengubah biaya pengiriman yang sebenarnya.
+1. ShippingFee, yaitu memaksimalkan total ShippingFee dari seluruh kendaraan yang diangkut.
+2. ETA (bonus), yaitu total ShippingFee yang dikurangi setengahnya untuk kendaraan dengan ETA paling lama 3 hari yang diletakkan jauh dari pintu masuk, sehingga kendaraan yang harus cepat diturunkan cenderung ditempatkan di dekat pintu masuk.
 
-## Struktur Repository
+## Struktur File Repository
 
 ```
 IF3070_G18_Triplets/
-├── docs/                         laporan dalam format PDF
+├── docs/
+│   └── img/
 ├── output/
-│   ├── hc/                       hasil Hill-Climbing
-│   ├── bonus_eta/                hasil Hill-Climbing dengan objective ETA
-│   ├── sa/                       hasil Simulated Annealing
-│   └── ga/                       hasil Genetic Algorithm dan eksperimen bonus GA
+│   ├── hc/
+│   ├── bonus_eta/
+│   ├── sa/
+│   └── ga/
 ├── src/
 │   ├── data/
 │   │   ├── kasus_1.json
 │   │   ├── kasus_multi.json
 │   │   └── make_data.py
-│   ├── core.py                   pembacaan data, constraint, objective function
-│   ├── neighbor.py               initial state dan neighbor
-│   ├── hill_climbing.py          keempat varian Hill-Climbing
-│   ├── sa.py                     Simulated Annealing
-│   ├── geneticalgorithm.py       Genetic Algorithm
-│   ├── data_io.py                lokasi file data dan output
-│   ├── visual.py                 gambar kapal dan grafik
-│   ├── main.py                   program demo
+│   ├── core.py
+│   ├── neighbor.py
+│   ├── hill_climbing.py
+│   ├── sa.py
+│   ├── geneticalgorithm.py
+│   ├── data_io.py
+│   ├── visual.py
+│   ├── main.py
 │   ├── run_hill_climbing.py
 │   ├── run_sa.py
 │   ├── run_geneticalgorithm.py
@@ -120,8 +138,6 @@ IF3070_G18_Triplets/
 
 | Nama | NIM | Tugas |
 | --- | --- | --- |
-| Indah Ramadhani | 18224037 | Pemeriksaan constraint dan objective function, keempat varian Hill-Climbing beserta eksperimennya, bonus objective ETA |
-| Tiara Clianta Andiwi | 18224078 | Initial state dan neighbor, Simulated Annealing beserta eksperimennya, bonus multi-kapal |
-| Salsabila Shofiyah | 18224088 | Dataset, Genetic Algorithm beserta eksperimennya, visualisasi, program demo, pengelolaan repository |
-
-Integrasi kode, pengujian, dan penyusunan laporan dikerjakan bersama oleh ketiga anggota.
+| Indah Ramadhani | 18224037 | • Pemeriksaan constraint dan objective function<br>• Implementasi dan eksperimen keempat varian Hill-Climbing<br>• Bonus objective function ETA<br>• Laporan BAB I, subbab BAB II 2.1.3, 2.2, 2.4, BAB III 3.1, dan 3.2 |
+| Tiara Clianta Andiwi | 18224078 | • Pembentukan initial state dan neighbor<br>• Implementasi dan eksperimen Simulated Annealing<br>• Bonus multi-kapal<br>• Laporan subbab BAB II 2.1.2, 2.1.4, 2.5, dan BAB III 3.3<br>• Form Penggunaan Generative AI |
+| Salsabila Shofiyah | 18224088 | • Dataset<br>• Implementasi dan eksperimen Genetic Algorithm<br>• Visualisasi semua algoritma<br>• Program demo `main.py`<br>• README dan release<br>• Laporan BAB II subbab 2.1.1, 2.3, 2.6, 2.7, 2.8, BAB IV, dan BAB V |
