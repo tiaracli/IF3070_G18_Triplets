@@ -300,7 +300,8 @@ while True:
     if objective == "eta":
         judul += ", objective Estimated Time of Arrival (ETA)"
     nama_kasus = "kasus_1" if data == "1" else "kasus_multi"
-    nama = nama_kasus + "_" + KODE[pilihan] + "_" + objective + "_seed" + str(seed)
+    nama_algoritma = ALGORITMA[pilihan].lower().replace(" ", "_")
+    nama = nama_kasus + "_" + nama_algoritma + "_" + objective + "_seed" + str(seed)
     dibuka = save_gambar(problem, hasil, judul, nama)
     print("\nGambar sudah disimpan di folder output/demo dengan nama " + nama)
     if pilih_output("Tampilkan visualisasi untuk state final?"):
