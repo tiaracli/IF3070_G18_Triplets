@@ -1,0 +1,178 @@
+{
+  "ships": [
+    {
+      "id": "kapal1",
+      "w": 8,
+      "l": 8,
+      "capacity": 22
+    },
+    {
+      "id": "kapal2",
+      "w": 6,
+      "l": 8,
+      "capacity": 16
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "motor1",
+      "w": 1,
+      "l": 2,
+      "weight": 1,
+      "fee": 10,
+      "eta": 2
+    },
+    {
+      "id": "motor2",
+      "w": 1,
+      "l": 2,
+      "weight": 1,
+      "fee": 10,
+      "eta": 3
+    },
+    {
+      "id": "motor3",
+      "w": 1,
+      "l": 2,
+      "weight": 1,
+      "fee": 10,
+      "eta": 4
+    },
+    {
+      "id": "motor4",
+      "w": 1,
+      "l": 2,
+      "weight": 1,
+      "fee": 10,
+      "eta": 5
+    },
+    {
+      "id": "motor5",
+      "w": 1,
+      "l": 2,
+      "weight": 1,
+      "fee": 10,
+      "eta": 6
+    },
+    {
+      "id": "motor6",
+      "w": 1,
+      "l": 2,
+      "weight": 1,
+      "fee": 10,
+      "eta": 7
+    },
+    {
+      "id": "sedan1",
+      "w": 2,
+      "l": 3,
+      "weight": 2,
+      "fee": 30,
+      "eta": 8
+    },
+    {
+      "id": "sedan2",
+      "w": 2,
+      "l": 3,
+      "weight": 2,
+      "fee": 30,
+      "eta": 9
+    },
+    {
+      "id": "sedan3",
+      "w": 2,
+      "l": 3,
+      "weight": 2,
+      "fee": 30,
+      "eta": 10
+    },
+    {
+      "id": "sedan4",
+      "w": 2,
+      "l": 3,
+      "weight": 2,
+      "fee": 30,
+      "eta": 1
+    },
+    {
+      "id": "sedan5",
+      "w": 2,
+      "l": 3,
+      "weight": 2,
+      "fee": 30,
+      "eta": 2
+    },
+    {
+      "id": "sedan6",
+      "w": 2,
+      "l": 3,
+      "weight": 2,
+      "fee": 30,
+      "eta": 3
+    },
+    {
+      "id": "suv1",
+      "w": 2,
+      "l": 4,
+      "weight": 3,
+      "fee": 38,
+      "eta": 4
+    },
+    {
+      "id": "suv2",
+      "w": 2,
+      "l": 4,
+      "weight": 3,
+      "fee": 38,
+      "eta": 5
+    },
+    {
+      "id": "suv3",
+      "w": 2,
+      "l": 4,
+      "weight": 3,
+      "fee": 38,
+      "eta": 6
+    },
+    {
+      "id": "suv4",
+      "w": 2,
+      "l": 4,
+      "weight": 3,
+      "fee": 38,
+      "eta": 7
+    },
+    {
+      "id": "suv5",
+      "w": 2,
+      "l": 4,
+      "weight": 3,
+      "fee": 38,
+      "eta": 8
+    },
+    {
+      "id": "truk1",
+      "w": 3,
+      "l": 4,
+      "weight": 5,
+      "fee": 70,
+      "eta": 9
+    },
+    {
+      "id": "truk2",
+      "w": 3,
+      "l": 4,
+      "weight": 5,
+      "fee": 70,
+      "eta": 10
+    },
+    {
+      "id": "truk3",
+      "w": 3,
+      "l": 4,
+      "weight": 5,
+      "fee": 70,
+      "eta": 1
+    }
+  ]
+}

@@ -2,11 +2,10 @@ import math
 import random
 import time
 
-from core import value_fee, eta_value, check_placement
+from core import value_fee, value_eta, cek_placement
 from neighbor import random_state, random_neighbor, all_neighbors
 
-
-def schedule(t, T0, alpha, T_min):
+def calculate_suhu(t, T0, alpha, T_min):
     T = T0 * (alpha ** t)
 
     if T < T_min:
@@ -14,9 +13,8 @@ def schedule(t, T0, alpha, T_min):
 
     return T
 
-
-def is_local_optimum(problem, state, objective="fee"):
-    score_function = eta_value if objective == "eta" else value_fee
+def cek_localoptimum(problem, state, objective="fee"):
+    score_function = value_eta if objective == "eta" else value_fee
 
     v = score_function(problem, state)
 
@@ -25,7 +23,6 @@ def is_local_optimum(problem, state, objective="fee"):
             return False
 
     return True
-
 
 def simulated_annealing(
     problem,
@@ -51,20 +48,18 @@ def simulated_annealing(
     if seed is not None:
         random.seed(seed)
 
-    score_function = eta_value if objective == "eta" else value_fee
+    score_function = value_eta if objective == "eta" else value_fee
 
     start = time.time()
-
     current = initial if initial is not None else random_state(problem)
 
-    if not check_placement(problem, current):
+    if not cek_placement(problem, current):
         raise ValueError("Initial state tidak valid")
 
     cur_val = score_function(problem, current)
 
     best, best_val = current, cur_val
     awal = current
-
     history = [cur_val]
     probs = []
     stuck = 0
@@ -73,7 +68,7 @@ def simulated_annealing(
 
     while True:
         t += 1
-        T = schedule(t, T0, alpha, T_min)
+        T = calculate_suhu(t, T0, alpha, T_min)
 
         if T == 0:
             break
@@ -108,7 +103,9 @@ def simulated_annealing(
 
         history.append(cur_val)
 
-    final_local_opt = is_local_optimum(problem, current, objective)
+
+    final_local_opt = cek_localoptimum(problem, current, objective)
+
 
     return {
         "algo": "SA",

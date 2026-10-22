@@ -1,0 +1,13 @@
+algorithm,objective,seed,initial_score,final_score,iterations,duration_seconds,total_fee,eta_score,misplaced_urgent,vehicles_loaded
+steepest,fee,42,228,284,3,0.0551,284,236.0,4,10
+stochastic,fee,42,228,276,3,0.0582,276,247.0,3,10
+sideways,fee,42,228,284,23,0.4784,284,236.0,4,10
+random_restart,fee,42,228,298,39,1.8295,298,288.0,2,9
+steepest,fee,43,228,254,3,0.1053,254,211.0,3,9
+stochastic,fee,43,228,254,3,0.0806,254,211.0,3,9
+sideways,fee,43,228,286,29,0.3954,286,208.0,4,9
+random_restart,fee,43,228,298,36,0.6628,298,258.0,2,9
+steepest,fee,44,178,284,6,0.0919,284,260.0,2,10
+stochastic,fee,44,178,284,7,0.1046,284,241.0,3,10
+sideways,fee,44,178,284,26,0.3472,284,241.0,3,10
+random_restart,fee,44,178,300,46,0.8754,300,300,0,10

@@ -1,19 +1,25 @@
 
 import random
-from core import check_placement, value_fee, eta_value
+
+from core import cek_placement, value_fee, value_eta
 
 
-def get_score(problem, state, objective):
+def nilai_state(problem, state, objective):
     if objective == "eta":
-        return eta_value(problem, state)
-    return value_fee(problem, state)
+        return value_eta(problem, state)
+    elif objective == "fee":
+        return value_fee(problem, state)
+    raise ValueError("Objective harus 'fee' atau 'eta'")
 
 
-def steepest_ascent(problem, initial_state, get_neighbors,
+def steepestascent_hc(problem, initial_state, get_neighbors,
                    objective="fee", max_iterations=500):
 
-    current_state = initial_state.copy()
-    current_score = get_score(problem, current_state, objective)
+    if not cek_placement(problem, initial_state):
+        raise ValueError("Initial state tidak valid")
+
+    current_state = initial_state
+    current_score = nilai_state(problem, current_state, objective)
 
     history = [current_score]
     iterations = 0
@@ -22,11 +28,11 @@ def steepest_ascent(problem, initial_state, get_neighbors,
         best_state = None
         best_score = current_score
 
-        for neighbor in get_neighbors(current_state):
-            if not check_placement(problem, neighbor):
+        for neighbor in get_neighbors(problem, current_state):
+            if not cek_placement(problem, neighbor):
                 continue
 
-            neighbor_score = get_score(problem, neighbor, objective)
+            neighbor_score = nilai_state(problem, neighbor, objective)
 
             if neighbor_score > best_score:
                 best_state = neighbor
@@ -35,7 +41,7 @@ def steepest_ascent(problem, initial_state, get_neighbors,
         if best_state is None:
             break
 
-        current_state = best_state.copy()
+        current_state = best_state
         current_score = best_score
 
         iterations += 1
@@ -49,11 +55,14 @@ def steepest_ascent(problem, initial_state, get_neighbors,
     }
 
 
-def stochastic_hill_climbing(problem, initial_state, get_neighbors,
+def stochastic_hc(problem, initial_state, get_neighbors,
                              objective="fee", max_iterations=500):
 
-    current_state = initial_state.copy()
-    current_score = get_score(problem, current_state, objective)
+    if not cek_placement(problem, initial_state):
+        raise ValueError("Initial state tidak valid")
+
+    current_state = initial_state
+    current_score = nilai_state(problem, current_state, objective)
 
     history = [current_score]
     iterations = 0
@@ -61,21 +70,21 @@ def stochastic_hill_climbing(problem, initial_state, get_neighbors,
     while iterations < max_iterations:
         better_neighbors = []
 
-        for neighbor in get_neighbors(current_state):
-            if not check_placement(problem, neighbor):
+        for neighbor in get_neighbors(problem, current_state):
+            if not cek_placement(problem, neighbor):
                 continue
 
-            neighbor_score = get_score(problem, neighbor, objective)
+            neighbor_score = nilai_state(problem, neighbor, objective)
 
             if neighbor_score > current_score:
                 better_neighbors.append((neighbor, neighbor_score))
 
-        if len(better_neighbors) == 0:
+        if not better_neighbors:
             break
 
         chosen_state, chosen_score = random.choice(better_neighbors)
 
-        current_state = chosen_state.copy()
+        current_state = chosen_state
         current_score = chosen_score
 
         iterations += 1
@@ -89,52 +98,56 @@ def stochastic_hill_climbing(problem, initial_state, get_neighbors,
     }
 
 
-def sideways_hill_climbing(problem, initial_state, get_neighbors,
+def sideways_hc(problem, initial_state, get_neighbors,
                            objective="fee", max_iterations=500,
                            max_sideways=20):
 
-    current_state = initial_state.copy()
-    current_score = get_score(problem, current_state, objective)
+    if not cek_placement(problem, initial_state):
+        raise ValueError("Initial state tidak valid")
+
+    current_state = initial_state
+    current_score = nilai_state(problem, current_state, objective)
 
     history = [current_score]
     iterations = 0
     sideways_count = 0
     total_sideways = 0
 
+    visited = {tuple(current_state)}
+
     while iterations < max_iterations:
         best_state = None
         best_score = current_score
+        equal_neighbors = []
 
-        for neighbor in get_neighbors(current_state):
-            if not check_placement(problem, neighbor):
+        for neighbor in get_neighbors(problem, current_state):
+            if not cek_placement(problem, neighbor):
                 continue
 
-            if neighbor == current_state:
-                continue
-
-            neighbor_score = get_score(problem, neighbor, objective)
+            neighbor_score = nilai_state(problem, neighbor, objective)
 
             if neighbor_score > best_score:
                 best_state = neighbor
                 best_score = neighbor_score
 
-            elif neighbor_score == best_score and best_state is None:
-                best_state = neighbor
+            elif neighbor_score == current_score:
+                if tuple(neighbor) not in visited:
+                    equal_neighbors.append(neighbor)
 
-        if best_state is None:
-            break
+        if best_state is not None:
+            current_state = best_state
+            current_score = best_score
+            sideways_count = 0
+            visited = {tuple(current_state)}
 
-        if best_score == current_score:
-            if sideways_count >= max_sideways:
-                break
-
+        elif equal_neighbors and sideways_count < max_sideways:
+            current_state = random.choice(equal_neighbors)
             sideways_count += 1
             total_sideways += 1
-        else:
-            sideways_count = 0
+            visited.add(tuple(current_state))
 
-        current_state = best_state.copy()
-        current_score = best_score
+        else:
+            break
 
         iterations += 1
         history.append(current_score)
@@ -149,23 +162,27 @@ def sideways_hill_climbing(problem, initial_state, get_neighbors,
     }
 
 
-def random_restart_hill_climbing(problem, initial_state,
-                                 get_neighbors, random_state,
-                                 objective="fee", max_restarts=10,
-                                 max_iterations=500):
+def randomrestart_hc(problem, initial_state, get_neighbors,
+                                 random_state, objective="fee",
+                                 max_restarts=10, max_iterations=500):
+
+    if not cek_placement(problem, initial_state):
+        raise ValueError("Initial state tidak valid")
 
     best_result = None
     restart_scores = []
     restart_iterations = []
     all_histories = []
 
+    total_iterations = 0
+
     for restart in range(max_restarts + 1):
         if restart == 0:
-            start_state = initial_state.copy()
+            start_state = initial_state
         else:
-            start_state = random_state()
+            start_state = random_state(problem)
 
-        result = steepest_ascent(
+        result = steepestascent_hc(
             problem,
             start_state,
             get_neighbors,
@@ -177,12 +194,12 @@ def random_restart_hill_climbing(problem, initial_state,
         restart_iterations.append(result["iterations"])
         all_histories.append(result["history"])
 
+        total_iterations += result["iterations"]
+
         if best_result is None:
             best_result = result
         elif result["final_score"] > best_result["final_score"]:
             best_result = result
-
-    total_iterations = sum(restart_iterations)
 
     return {
         "final_state": best_result["final_state"],

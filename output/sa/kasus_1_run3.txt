@@ -1,0 +1,29 @@
+=== kasus_1 run 3 (seed 33) ===
+
+STATE AWAL (value_fee 248)
+kapal1 (muatan 18/22)
+. D M M M . I I
+. D M M M . I I
+. . M M M . I I
+E E M M M . I I
+E E . . . L L L
+E E F F . L L L
+. . F F . L L L
+. . F F . L L L
+
+Di luar: motor1, motor2, motor3, sedan3, sedan4, suv2, suv3
+Legenda: A=motor1, B=motor2, C=motor3, D=motor4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
+
+STATE AKHIR (value_fee 296)
+kapal1 (muatan 22/22)
+G G G . L L L L
+G G G . L L L L
+F F E E L L L L
+F F E E J J J J
+F F E E J J J J
+A A H H K K K K
+. . H H K K K K
+. . H H C C B B
+
+Di luar: motor4, suv1, truk2
+Legenda: A=motor1, B=motor2, C=motor3, D=motor4, E=sedan1, F=sedan2, G=sedan3, H=sedan4, I=suv1, J=suv2, K=suv3, L=truk1, M=truk2
